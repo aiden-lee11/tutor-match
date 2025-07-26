@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiService, Tutor } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
-const CreateTutorForm: React.FC = () => {
+interface CreateTutorFormProps {
+  onProfileCompleted?: () => void;
+}
+
+const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted }) => {
+  const { setProfileCompleted, currentUser } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
+    email: '',
     subjects: '',
     pay: '',
     bio: '',
@@ -11,6 +18,17 @@ const CreateTutorForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Auto-populate name and email from authenticated user
+  useEffect(() => {
+    if (currentUser) {
+      setFormData(prev => ({
+        ...prev,
+        name: currentUser.displayName || '',
+        email: currentUser.email || ''
+      }));
+    }
+  }, [currentUser]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -28,6 +46,7 @@ const CreateTutorForm: React.FC = () => {
     try {
       const tutorData: Omit<Tutor, 'id'> = {
         name: formData.name,
+        email: formData.email,
         subjects: formData.subjects.split(',').map(s => s.trim()).filter(s => s),
         pay: parseFloat(formData.pay),
         rating: parseFloat(formData.rating),
@@ -39,14 +58,25 @@ const CreateTutorForm: React.FC = () => {
       setMessage(`Success: ${response.message}`);
       console.log('Created tutor:', response.data);
       
+      // Mark profile as completed
+      setProfileCompleted(true);
+      
       // Reset form
       setFormData({
         name: '',
+        email: '',
         subjects: '',
         pay: '',
         bio: '',
         rating: '5.0'
       });
+
+      // Call callback if provided (for onboarding flow)
+      if (onProfileCompleted) {
+        setTimeout(() => {
+          onProfileCompleted();
+        }, 2000); // Show success message for 2 seconds before redirecting
+      }
     } catch (error) {
       setMessage(`Error: ${error instanceof Error ? error.message : 'Failed to create tutor'}`);
     } finally {
@@ -73,6 +103,29 @@ const CreateTutorForm: React.FC = () => {
               placeholder="Enter your full name"
               required
             />
+            {currentUser?.displayName && (
+              <p className="text-xs text-gray-500">Name is automatically filled from your account</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50"
+              placeholder="Enter your email address"
+              readOnly={!!currentUser?.email}
+              required
+            />
+            {currentUser?.email && (
+              <p className="text-xs text-gray-500">Email is automatically filled from your account</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -161,6 +214,11 @@ const CreateTutorForm: React.FC = () => {
               : 'bg-red-50 text-red-800 border border-red-200'
           }`}>
             {message}
+            {message.startsWith('Success') && onProfileCompleted && (
+              <div className="mt-2 text-sm">
+                Redirecting to your dashboard...
+              </div>
+            )}
           </div>
         )}
       </div>

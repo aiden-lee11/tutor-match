@@ -120,6 +120,45 @@ func GetClientByID(id int) (*Client, error) {
 	return &client, nil
 }
 
+// GetClientByEmail retrieves a client by email from the database
+func GetClientByEmail(email string) (*Client, error) {
+	db := database.GetDB()
+	if db == nil {
+		// Check sample data if database is not available
+		clients := getSampleClients()
+		for _, client := range clients {
+			if client.Email == email {
+				return &client, nil
+			}
+		}
+		return nil, pgx.ErrNoRows
+	}
+
+	query := `
+		SELECT id, name, email, subjects, budget, description, created_at, updated_at 
+		FROM clients 
+		WHERE email = $1
+	`
+
+	var client Client
+	err := db.QueryRow(context.Background(), query, email).Scan(
+		&client.ID,
+		&client.Name,
+		&client.Email,
+		&client.Subjects,
+		&client.Budget,
+		&client.Description,
+		&client.CreatedAt,
+		&client.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &client, nil
+}
+
 // getSampleClients returns sample client data (fallback when database is not available)
 func getSampleClients() []Client {
 	return []Client{

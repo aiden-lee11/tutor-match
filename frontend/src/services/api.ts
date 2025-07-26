@@ -3,6 +3,7 @@ const API_BASE_URL = 'http://localhost:8080/api';
 export interface Tutor {
   id?: number;
   name: string;
+  email?: string;
   subjects: string[];
   pay: number;
   rating?: number;
@@ -66,6 +67,11 @@ class ApiService {
     });
   }
 
+  async getTutorByEmail(email: string): Promise<ApiResponse<Tutor | null>> {
+    const encodedEmail = encodeURIComponent(email);
+    return this.request<Tutor | null>(`/tutors/by-email/${encodedEmail}`);
+  }
+
   // Client endpoints
   async getClients(): Promise<ApiResponse<Client[]>> {
     return this.request<Client[]>('/clients');
@@ -76,6 +82,53 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify(client),
     });
+  }
+
+  async getClientByEmail(email: string): Promise<ApiResponse<Client | null>> {
+    const encodedEmail = encodeURIComponent(email);
+    return this.request<Client | null>(`/clients/by-email/${encodedEmail}`);
+  }
+
+  // Check if user has any existing profile
+  async checkUserProfile(email: string): Promise<{ 
+    hasProfile: boolean; 
+    userType: 'tutor' | 'student' | null;
+    profileData: Tutor | Client | null;
+  }> {
+    try {
+      // Check for client profile first
+      const clientResponse = await this.getClientByEmail(email);
+      if (clientResponse.data) {
+        return {
+          hasProfile: true,
+          userType: 'student',
+          profileData: clientResponse.data
+        };
+      }
+
+      // Check for tutor profile
+      const tutorResponse = await this.getTutorByEmail(email);
+      if (tutorResponse.data) {
+        return {
+          hasProfile: true,
+          userType: 'tutor',
+          profileData: tutorResponse.data
+        };
+      }
+
+      return {
+        hasProfile: false,
+        userType: null,
+        profileData: null
+      };
+    } catch (error) {
+      console.error('Error checking user profile:', error);
+      return {
+        hasProfile: false,
+        userType: null,
+        profileData: null
+      };
+    }
   }
 
   // Health check

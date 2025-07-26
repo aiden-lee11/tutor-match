@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -30,14 +29,14 @@ func main() {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
-	// Setup routes and middleware
+	// Create Gin router
 	r := gin.Default()
 
-	// Enable CORS for frontend communication
+	// Configure CORS manually
 	r.Use(func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Origin", "http://localhost:5173")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
 		
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
@@ -47,25 +46,27 @@ func main() {
 		c.Next()
 	})
 
+	// Health check endpoint
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "healthy",
+			"message": "Server is running",
+		})
+	})
+
 	// API routes
 	api := r.Group("/api")
 	{
 		// Tutor routes
 		api.GET("/tutors", handlers.GetTutors)
 		api.POST("/tutors", handlers.CreateTutor)
-		
+		api.GET("/tutors/by-email/:email", handlers.GetTutorByEmail)
+
 		// Client routes
 		api.GET("/clients", handlers.GetClients)
 		api.POST("/clients", handlers.CreateClient)
+		api.GET("/clients/by-email/:email", handlers.GetClientByEmail)
 	}
-
-	// Health check endpoint
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
-			"message": "Server is running",
-		})
-	})
 
 	// Get port from environment variable or use default
 	port := os.Getenv("PORT")

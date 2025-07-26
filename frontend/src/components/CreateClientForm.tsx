@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiService, Client } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
-const CreateClientForm: React.FC = () => {
+interface CreateClientFormProps {
+  onProfileCompleted?: () => void;
+}
+
+const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted }) => {
+  const { setProfileCompleted, currentUser } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,6 +17,17 @@ const CreateClientForm: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  // Auto-populate email from authenticated user
+  useEffect(() => {
+    if (currentUser?.email) {
+      setFormData(prev => ({
+        ...prev,
+        email: currentUser.email || '',
+        name: currentUser.displayName || ''
+      }));
+    }
+  }, [currentUser]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,6 +56,9 @@ const CreateClientForm: React.FC = () => {
       setMessage(`Success: ${response.message}`);
       console.log('Created client:', response.data);
       
+      // Mark profile as completed
+      setProfileCompleted(true);
+      
       // Reset form
       setFormData({
         name: '',
@@ -47,6 +67,13 @@ const CreateClientForm: React.FC = () => {
         budget: '',
         description: ''
       });
+
+      // Call callback if provided (for onboarding flow)
+      if (onProfileCompleted) {
+        setTimeout(() => {
+          onProfileCompleted();
+        }, 2000); // Show success message for 2 seconds before redirecting
+      }
     } catch (error) {
       setMessage(`Error: ${error instanceof Error ? error.message : 'Failed to create client'}`);
     } finally {
@@ -85,10 +112,14 @@ const CreateClientForm: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50"
               placeholder="Enter your email address"
+              readOnly={!!currentUser?.email}
               required
             />
+            {currentUser?.email && (
+              <p className="text-xs text-gray-500">Email is automatically filled from your account</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -157,6 +188,11 @@ const CreateClientForm: React.FC = () => {
               : 'bg-red-50 text-red-800 border border-red-200'
           }`}>
             {message}
+            {message.startsWith('Success') && onProfileCompleted && (
+              <div className="mt-2 text-sm">
+                Redirecting to your dashboard...
+              </div>
+            )}
           </div>
         )}
       </div>
