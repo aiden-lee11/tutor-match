@@ -16,6 +16,10 @@ type Client struct {
 	Subjects    []string  `json:"subjects"`
 	Budget      float64   `json:"budget"`
 	Description string    `json:"description"`
+	Language    string    `json:"language"`
+	Location    string    `json:"location"`
+	Availability string    `json:"availability"`
+	Education   string    `json:"education"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -29,7 +33,7 @@ func GetClients() ([]Client, error) {
 	}
 
 	query := `
-		SELECT id, name, email, subjects, budget, description, created_at, updated_at 
+		SELECT id, name, email, subjects, budget, description, language, location, availability, education, created_at, updated_at
 		FROM clients 
 		ORDER BY created_at DESC
 	`
@@ -50,6 +54,10 @@ func GetClients() ([]Client, error) {
 			&client.Subjects,
 			&client.Budget,
 			&client.Description,
+			&client.Language,
+			&client.Location,
+			&client.Availability,
+			&client.Education,
 			&client.CreatedAt,
 			&client.UpdatedAt,
 		)
@@ -70,8 +78,8 @@ func CreateClient(client *Client) error {
 	}
 
 	query := `
-		INSERT INTO clients (name, email, subjects, budget, description)
-		VALUES ($1, $2, $3, $4, $5)
+		INSERT INTO clients (name, email, subjects, budget, description, language, location, availability, education)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -83,6 +91,10 @@ func CreateClient(client *Client) error {
 		client.Subjects,
 		client.Budget,
 		client.Description,
+		client.Language,
+		client.Location,
+		client.Availability,
+		client.Education,
 	).Scan(&client.ID, &client.CreatedAt, &client.UpdatedAt)
 
 	return err
@@ -96,7 +108,7 @@ func GetClientByID(id int) (*Client, error) {
 	}
 
 	query := `
-		SELECT id, name, email, subjects, budget, description, created_at, updated_at 
+		SELECT id, name, email, subjects, budget, description, language, location, availability, education, created_at, updated_at
 		FROM clients 
 		WHERE id = $1
 	`
@@ -109,6 +121,10 @@ func GetClientByID(id int) (*Client, error) {
 		&client.Subjects,
 		&client.Budget,
 		&client.Description,
+		&client.Language,
+		&client.Location,
+		&client.Availability,
+		&client.Education,
 		&client.CreatedAt,
 		&client.UpdatedAt,
 	)
@@ -135,7 +151,7 @@ func GetClientByEmail(email string) (*Client, error) {
 	}
 
 	query := `
-		SELECT id, name, email, subjects, budget, description, created_at, updated_at 
+		SELECT id, name, email, subjects, budget, description, language, location, availability, education, created_at, updated_at
 		FROM clients 
 		WHERE email = $1
 	`
@@ -148,6 +164,10 @@ func GetClientByEmail(email string) (*Client, error) {
 		&client.Subjects,
 		&client.Budget,
 		&client.Description,
+		&client.Language,
+		&client.Location,
+		&client.Availability,
+		&client.Education,
 		&client.CreatedAt,
 		&client.UpdatedAt,
 	)

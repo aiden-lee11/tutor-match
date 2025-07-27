@@ -3,11 +3,17 @@ const API_BASE_URL = 'http://localhost:8080/api';
 export interface Tutor {
   id?: number;
   name: string;
-  email?: string;
+  email: string;
   subjects: string[];
   pay: number;
   rating?: number;
   bio: string;
+  language: string;
+  location: string;
+  availability: string;
+  experience: string;
+  education: string;
+  certification: string;
 }
 
 export interface Client {
@@ -17,6 +23,10 @@ export interface Client {
   subjects: string[];
   budget: number;
   description?: string;
+  language: string;
+  location: string;
+  availability: string;
+  education: string;
 }
 
 export interface ApiResponse<T> {

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Tutor } from '../services/api';
+import { apiService, type Tutor } from '../services/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import TutorDetailModal from './TutorDetailModal';
 
 const ClientDashboard: React.FC = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchTutors();
@@ -58,6 +61,16 @@ const ClientDashboard: React.FC = () => {
     return stars.join('');
   };
 
+  const handleTutorClick = (tutor: Tutor) => {
+    setSelectedTutor(tutor);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTutor(null);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -89,7 +102,7 @@ const ClientDashboard: React.FC = () => {
         <p className="text-lg text-gray-600">Browse our available tutors and find the perfect match for your learning needs.</p>
       </div>
 
-      {tutors.length === 0 ? (
+      {!tutors || tutors.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-xl text-gray-500 mb-4">No tutors available at the moment.</p>
           <Button onClick={fetchTutors} variant="outline">
@@ -99,7 +112,11 @@ const ClientDashboard: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tutors.map((tutor) => (
-            <Card key={tutor.id} className="hover:shadow-lg transition-shadow duration-200">
+            <Card 
+              key={tutor.id} 
+              className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] border-2 hover:border-blue-300"
+              onClick={() => handleTutorClick(tutor)}
+            >
               <CardHeader className="pb-4">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-12 w-12">
@@ -149,8 +166,15 @@ const ClientDashboard: React.FC = () => {
                   )}
 
                   <div className="pt-4">
-                    <Button className="w-full" size="sm">
-                      Contact Tutor
+                    <Button 
+                      className="w-full" 
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTutorClick(tutor);
+                      }}
+                    >
+                      View Profile
                     </Button>
                   </div>
                 </div>
@@ -159,6 +183,12 @@ const ClientDashboard: React.FC = () => {
           ))}
         </div>
       )}
+
+      <TutorDetailModal
+        tutor={selectedTutor}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };

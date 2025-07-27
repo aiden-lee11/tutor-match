@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Client } from '../services/api';
+import { apiService, type Client } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 interface CreateClientFormProps {
@@ -13,7 +13,11 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
     email: '',
     subjects: '',
     budget: '',
-    description: ''
+    description: '',
+    language: '',
+    location: '',
+    availability: '',
+    education: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -48,7 +52,11 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
         email: formData.email,
         subjects: formData.subjects.split(',').map(s => s.trim()).filter(s => s),
         budget: parseFloat(formData.budget),
-        description: formData.description
+        description: formData.description,
+        language: formData.language,
+        location: formData.location,
+        availability: formData.availability,
+        education: formData.education
       };
 
       const response = await apiService.createClient(clientData);
@@ -65,7 +73,11 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
         email: '',
         subjects: '',
         budget: '',
-        description: ''
+        description: '',
+        language: '',
+        location: '',
+        availability: '',
+        education: ''
       });
 
       // Call callback if provided (for onboarding flow)
@@ -153,6 +165,70 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               placeholder="25.00"
               min="0"
               step="0.01"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+              Language
+            </label>
+            <input
+              type="text"
+              id="language"
+              name="language"
+              value={formData.language}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="e.g. English, Spanish, French"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="e.g. New York City, Online"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
+              Availability
+            </label>
+            <input
+              type="text"
+              id="availability"
+              name="availability"
+              value={formData.availability}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="e.g. Weekdays 6-9 PM, Weekends all day"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="education" className="block text-sm font-medium text-gray-700">
+              Education Level
+            </label>
+            <input
+              type="text"
+              id="education"
+              name="education"
+              value={formData.education}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              placeholder="e.g. High School, Bachelor's, Master's"
               required
             />
           </div>

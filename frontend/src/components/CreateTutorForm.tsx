@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiService, Tutor } from '../services/api';
+import { apiService, type Tutor } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 interface CreateTutorFormProps {
@@ -14,7 +14,13 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
     subjects: '',
     pay: '',
     bio: '',
-    rating: '5.0'
+    rating: 5.0,
+    language: '',
+    location: '',
+    availability: '',
+    experience: '',
+    education: '',
+    certification: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -49,8 +55,14 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
         email: formData.email,
         subjects: formData.subjects.split(',').map(s => s.trim()).filter(s => s),
         pay: parseFloat(formData.pay),
-        rating: parseFloat(formData.rating),
-        bio: formData.bio
+        bio: formData.bio,
+        language: formData.language,
+        rating: 5.0,
+        location: formData.location,
+        availability: formData.availability,
+        experience: formData.experience,
+        education: formData.education,
+        certification: formData.certification
       };
 
       const response = await apiService.createTutor(tutorData);
@@ -68,7 +80,13 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
         subjects: '',
         pay: '',
         bio: '',
-        rating: '5.0'
+        language: '',
+        rating: 5.0,
+        location: '',
+        availability: '',
+        experience: '',
+        education: '',
+        certification: ''
       });
 
       // Call callback if provided (for onboarding flow)
@@ -164,22 +182,99 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="rating" className="block text-sm font-medium text-gray-700">
-              Starting Rating (1-5)
+            <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+              Language
             </label>
             <input
-              type="number"
-              id="rating"
-              name="rating"
-              value={formData.rating}
+              type="text"
+              id="language"
+              name="language"
+              value={formData.language}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              min="1"
-              max="5"
-              step="0.1"
+              placeholder="e.g. English, Spanish, French"
               required
             />
-            <p className="text-xs text-gray-500">This will be your initial rating on the platform</p>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="e.g. New York City, Online"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
+              Availability
+            </label>
+            <input
+              type="text"
+              id="availability"
+              name="availability"
+              value={formData.availability}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="e.g. Weekdays 6-9 PM, Weekends all day"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
+              Teaching Experience
+            </label>
+            <input
+              type="text"
+              id="experience"
+              name="experience"
+              value={formData.experience}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="e.g. 5 years private tutoring, 2 years teaching assistant"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="education" className="block text-sm font-medium text-gray-700">
+              Education
+            </label>
+            <input
+              type="text"
+              id="education"
+              name="education"
+              value={formData.education}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="e.g. Bachelor's in Mathematics, PhD in Physics"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="certification" className="block text-sm font-medium text-gray-700">
+              Certifications
+            </label>
+            <input
+              type="text"
+              id="certification"
+              name="certification"
+              value={formData.certification}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="e.g. Teaching License, TESOL Certificate"
+              required
+            />
           </div>
 
           <div className="space-y-2">

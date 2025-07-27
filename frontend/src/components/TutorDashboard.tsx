@@ -75,7 +75,7 @@ const TutorDashboard: React.FC = () => {
         <p className="text-lg text-gray-600">Connect with students who are looking for tutoring in your subject areas.</p>
       </div>
 
-      {clients.length === 0 ? (
+      {!clients ||clients.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-xl text-gray-500 mb-4">No clients available at the moment.</p>
           <Button onClick={fetchClients} variant="outline">

@@ -17,6 +17,12 @@ type Tutor struct {
 	Pay       float64   `json:"pay"`
 	Rating    float64   `json:"rating"`
 	Bio       string    `json:"bio"`
+	Language  string    `json:"language"`
+	Location  string    `json:"location"`
+	Availability string    `json:"availability"`
+	Experience string    `json:"experience"`
+	Education string    `json:"education"`
+	Certification string    `json:"certification"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -29,52 +35,19 @@ func GetTutors() ([]Tutor, error) {
 		return getSampleTutors(), nil
 	}
 
-	// First, try to query with email column (for updated schema)
+	// Query with consistent column order
 	query := `
-		SELECT id, name, email, subjects, pay, rating, bio, created_at, updated_at 
+		SELECT id, name, email, subjects, pay, rating, bio, language, location, availability, experience, education, certification, created_at, updated_at
 		FROM tutors 
 		ORDER BY created_at DESC
 	`
 
 	rows, err := db.Query(context.Background(), query)
 	if err != nil {
-		// If that fails (email column doesn't exist), try without email
-		queryWithoutEmail := `
-			SELECT id, name, subjects, pay, rating, bio, created_at, updated_at 
-			FROM tutors 
-			ORDER BY created_at DESC
-		`
-		
-		rows, err = db.Query(context.Background(), queryWithoutEmail)
-		if err != nil {
-			return nil, err
-		}
-		defer rows.Close()
-
-		// Scan without email field
-		var tutors []Tutor
-		for rows.Next() {
-			var tutor Tutor
-			err := rows.Scan(
-				&tutor.ID,
-				&tutor.Name,
-				&tutor.Subjects,
-				&tutor.Pay,
-				&tutor.Rating,
-				&tutor.Bio,
-				&tutor.CreatedAt,
-				&tutor.UpdatedAt,
-			)
-			if err != nil {
-				return nil, err
-			}
-			tutors = append(tutors, tutor)
-		}
-		return tutors, nil
+		return nil, err
 	}
 	defer rows.Close()
 
-	// Scan with email field
 	var tutors []Tutor
 	for rows.Next() {
 		var tutor Tutor
@@ -86,6 +59,12 @@ func GetTutors() ([]Tutor, error) {
 			&tutor.Pay,
 			&tutor.Rating,
 			&tutor.Bio,
+			&tutor.Language,
+			&tutor.Location,
+			&tutor.Availability,
+			&tutor.Experience,
+			&tutor.Education,
+			&tutor.Certification,
 			&tutor.CreatedAt,
 			&tutor.UpdatedAt,
 		)
@@ -107,8 +86,8 @@ func CreateTutor(tutor *Tutor) error {
 
 	// First, try to insert with email column (for updated schema)
 	query := `
-		INSERT INTO tutors (name, email, subjects, pay, rating, bio)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO tutors (name, email, subjects, pay, rating, bio, language, location, availability, experience, education, certification)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -121,13 +100,19 @@ func CreateTutor(tutor *Tutor) error {
 		tutor.Pay,
 		tutor.Rating,
 		tutor.Bio,
+		tutor.Language,
+		tutor.Location,
+		tutor.Availability,
+		tutor.Experience,
+		tutor.Education,
+		tutor.Certification,
 	).Scan(&tutor.ID, &tutor.CreatedAt, &tutor.UpdatedAt)
 
 	if err != nil {
 		// If that fails (email column doesn't exist), try without email
 		queryWithoutEmail := `
-			INSERT INTO tutors (name, subjects, pay, rating, bio)
-			VALUES ($1, $2, $3, $4, $5)
+			INSERT INTO tutors (name, subjects, pay, rating, bio, language, location, availability, experience, education, certification)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 			RETURNING id, created_at, updated_at
 		`
 
@@ -139,6 +124,12 @@ func CreateTutor(tutor *Tutor) error {
 			tutor.Pay,
 			tutor.Rating,
 			tutor.Bio,
+			tutor.Language,
+			tutor.Location,
+			tutor.Availability,
+			tutor.Experience,
+			tutor.Education,
+			tutor.Certification,
 		).Scan(&tutor.ID, &tutor.CreatedAt, &tutor.UpdatedAt)
 	}
 
@@ -152,9 +143,8 @@ func GetTutorByID(id int) (*Tutor, error) {
 		return nil, pgx.ErrNoRows
 	}
 
-	// First, try to query with email column
 	query := `
-		SELECT id, name, email, subjects, pay, rating, bio, created_at, updated_at 
+		SELECT id, name, email, subjects, pay, rating, bio, language, location, availability, experience, education, certification, created_at, updated_at
 		FROM tutors 
 		WHERE id = $1
 	`
@@ -168,31 +158,18 @@ func GetTutorByID(id int) (*Tutor, error) {
 		&tutor.Pay,
 		&tutor.Rating,
 		&tutor.Bio,
+		&tutor.Language,
+		&tutor.Location,
+		&tutor.Availability,
+		&tutor.Experience,
+		&tutor.Education,
+		&tutor.Certification,
 		&tutor.CreatedAt,
 		&tutor.UpdatedAt,
 	)
 
 	if err != nil {
-		// If that fails (email column doesn't exist), try without email
-		queryWithoutEmail := `
-			SELECT id, name, subjects, pay, rating, bio, created_at, updated_at 
-			FROM tutors 
-			WHERE id = $1
-		`
-		
-		err = db.QueryRow(context.Background(), queryWithoutEmail, id).Scan(
-			&tutor.ID,
-			&tutor.Name,
-			&tutor.Subjects,
-			&tutor.Pay,
-			&tutor.Rating,
-			&tutor.Bio,
-			&tutor.CreatedAt,
-			&tutor.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	return &tutor, nil
@@ -213,7 +190,7 @@ func GetTutorByEmail(email string) (*Tutor, error) {
 	}
 
 	query := `
-		SELECT id, name, email, subjects, pay, rating, bio, created_at, updated_at 
+		SELECT id, name, email, subjects, pay, rating, bio, language, location, availability, experience, education, certification, created_at, updated_at
 		FROM tutors 
 		WHERE email = $1
 	`
@@ -227,6 +204,12 @@ func GetTutorByEmail(email string) (*Tutor, error) {
 		&tutor.Pay,
 		&tutor.Rating,
 		&tutor.Bio,
+		&tutor.Language,
+		&tutor.Location,
+		&tutor.Availability,
+		&tutor.Experience,
+		&tutor.Education,
+		&tutor.Certification,
 		&tutor.CreatedAt,
 		&tutor.UpdatedAt,
 	)
