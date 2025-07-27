@@ -34,15 +34,26 @@ func main() {
 
 	// Configure CORS manually
 	r.Use(func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "http://localhost:5173, https://tutor-match-mvp.vercel.app")
+		// Define your allowed origins
+		allowedOrigins := []string{"http://localhost:5173", "https://tutor-match-mvp.vercel.app"}
+		origin := c.Request.Header.Get("Origin")
+
+		// Check if the request's origin is in your list
+		for _, allowedOrigin := range allowedOrigins {
+			if origin == allowedOrigin {
+				c.Header("Access-Control-Allow-Origin", origin)
+				break
+			}
+		}
+
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
-		
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
-		
+
 		c.Next()
 	})
 
@@ -87,4 +98,4 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down server...")
-} 
+}
