@@ -1,18 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { type Tutor } from '../services/api';
+import { type Client } from '../services/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { useAuth } from '../contexts/AuthContext';
 
-interface TutorDetailModalProps {
-  tutor: Tutor | null;
+interface ClientDetailModalProps {
+  client: Client | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const TutorDetailModal: React.FC<TutorDetailModalProps> = ({ tutor, isOpen, onClose }) => {
+const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { currentUser } = useAuth();
 
@@ -30,7 +30,7 @@ const TutorDetailModal: React.FC<TutorDetailModalProps> = ({ tutor, isOpen, onCl
     }
   }, [isOpen, onClose]);
 
-  if (!isOpen || !tutor) return null;
+  if (!isOpen || !client) return null;
 
   const getInitials = (name: string) => {
     return name
@@ -48,42 +48,29 @@ const TutorDetailModal: React.FC<TutorDetailModalProps> = ({ tutor, isOpen, onCl
     }).format(amount);
   };
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push('⭐');
-    }
-    if (hasHalfStar) {
-      stars.push('⭐');
-    }
-    return stars.join('');
-  };
-
-  const handleContactTutor = () => {
+  const handleContactStudent = () => {
     if (!currentUser) {
-      alert('Please sign in to contact tutors.');
+      alert('Please sign in to contact students.');
       return;
     }
 
     const userName = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
-    const subject = encodeURIComponent(`Tutoring Inquiry - ${tutor.name}`);
+    const subject = encodeURIComponent(`Tutoring Opportunity - ${client.name}`);
     const body = encodeURIComponent(`Hello,
 
-I'm interested in connecting with ${tutor.name} for tutoring services.
+I'm interested in connecting with ${client.name} for tutoring services.
 
-Tutor Details:
-- Name: ${tutor.name}
-- Subjects: ${tutor.subjects.join(', ')}
-- Rate: ${formatCurrency(tutor.pay)}/hr
-- Rating: ${tutor.rating || 'Not rated'}
+Student Details:
+- Name: ${client.name}
+- Subjects of interest: ${client.subjects.join(', ')}
+- Budget: ${formatCurrency(client.budget)}/hr
+- Description: ${client.description || 'No description provided'}
 
-Please help me get in touch with this tutor to discuss:
-- Availability for tutoring sessions
+Please help me get in touch with this student to discuss:
+- My availability for tutoring sessions
+- My experience with their subjects of interest
 - Preferred meeting format (in-person/online)
-- Specific topics or areas of focus
+- Scheduling and session details
 
 Thank you!
 
@@ -98,7 +85,7 @@ ${userName}`);
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Tutor Profile</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Student Profile</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl font-bold"
@@ -111,26 +98,19 @@ ${userName}`);
           <div className="border-0 shadow-none">
             <div className="px-0 pt-0">
               <div className="flex items-center space-x-6">
-                <div className="h-20 w-20 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-semibold text-2xl">
-                  {getInitials(tutor.name)}
+                <div className="h-20 w-20 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold text-2xl">
+                  {getInitials(client.name)}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{tutor.name}</h3>
-                  {tutor.email && (
-                    <p className="text-gray-600 dark:text-gray-300 mb-2">{tutor.email}</p>
+                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{client.name}</h3>
+                  {client.email && (
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">{client.email}</p>
                   )}
-                  <div className="flex items-center space-x-2">
-                    {tutor.rating && (
-                      <span className="text-lg text-yellow-500">
-                        {renderStars(tutor.rating || 0)} ({tutor.rating?.toFixed(1) || '0.0'})
-                      </span>
-                    )}
-                  </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Hourly Rate</p>
-                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                    {formatCurrency(tutor.pay)}/hr
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Budget</p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {formatCurrency(client.budget)}/hr
                   </p>
                 </div>
               </div>
@@ -139,53 +119,53 @@ ${userName}`);
             <div className="px-0 space-y-6">
               {/* Subjects */}
               <div>
-                <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Subjects</h4>
+                <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Looking for help with</h4>
                 <div className="flex flex-wrap gap-2">
-                  {tutor.subjects.map((subject, index) => (
-                    <span key={index} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  {client.subjects.map((subject, index) => (
+                    <span key={index} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                       {subject}
                     </span>
                   ))}
                 </div>
               </div>
 
-              {/* Bio */}
-              {tutor.bio && (
+              {/* Description */}
+              {client.description && (
                 <div>
                   <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">About</h4>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    {tutor.bio}
+                    {client.description}
                   </p>
                 </div>
               )}
 
               {/* Additional Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {tutor.location && (
+                {client.location && (
                   <div>
                     <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Location</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{tutor.location}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{client.location}</p>
                   </div>
                 )}
 
-                {tutor.language && (
+                {client.language && (
                   <div>
                     <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Languages</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{tutor.language}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{client.language}</p>
                   </div>
                 )}
 
-                {tutor.experience && (
+                {client.availability && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Experience</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{tutor.experience}</p>
+                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Availability</h4>
+                    <p className="text-gray-600 dark:text-gray-300">{client.availability}</p>
                   </div>
                 )}
 
-                {tutor.education && (
+                {client.education && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Education</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{tutor.education}</p>
+                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Education Level</h4>
+                    <p className="text-gray-600 dark:text-gray-300">{client.education}</p>
                   </div>
                 )}
               </div>
@@ -194,16 +174,16 @@ ${userName}`);
               <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={handleContactTutor}
-                    data-contact-button
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleContactStudent}
+                    data-contact-student-button
                     disabled={!currentUser}
                   >
-                    {currentUser ? 'Contact Tutor' : 'Sign in to Contact'}
+                    {currentUser ? 'Contact Student' : 'Sign in to Contact'}
                   </Button>
-                  {/* <Button variant="outline" className="flex-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <Button variant="outline" className="flex-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
                     Schedule Session
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -214,4 +194,4 @@ ${userName}`);
   );
 };
 
-export default TutorDetailModal; 
+export default ClientDetailModal; 

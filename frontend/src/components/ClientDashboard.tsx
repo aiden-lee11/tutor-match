@@ -5,6 +5,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import TutorDetailModal from './TutorDetailModal';
+import { useAuth } from '../contexts/AuthContext';
 
 const ClientDashboard: React.FC = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
@@ -12,6 +13,7 @@ const ClientDashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     fetchTutors();
@@ -69,6 +71,40 @@ const ClientDashboard: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedTutor(null);
+  };
+
+  const handleContactTutor = (tutor: Tutor, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent opening the detail modal
+    
+    if (!currentUser) {
+      alert('Please sign in to contact tutors.');
+      return;
+    }
+
+    const userName = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
+    const subject = encodeURIComponent(`Tutoring Inquiry - ${tutor.name}`);
+    const body = encodeURIComponent(`Hello,
+
+I'm interested in connecting with ${tutor.name} for tutoring services.
+
+Tutor Details:
+- Name: ${tutor.name}
+- Subjects: ${tutor.subjects.join(', ')}
+- Rate: ${formatCurrency(tutor.pay)}/hr
+- Rating: ${tutor.rating || 'Not rated'}
+
+Please help me get in touch with this tutor to discuss:
+- Availability for tutoring sessions
+- Preferred meeting format (in-person/online)
+- Specific topics or areas of focus
+
+Thank you!
+
+Best regards,
+${userName}`);
+
+    const mailtoLink = `mailto:jonathanschiff37@gmail.com?subject=${subject}&body=${body}`;
+    window.open(mailtoLink, '_blank');
   };
 
   if (loading) {
@@ -164,10 +200,19 @@ const ClientDashboard: React.FC = () => {
                     )}
 
                     <div className="pt-4 space-y-2">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm">
-                        Contact Tutor
+                      <Button 
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+                        size="sm"
+                        onClick={(e) => handleContactTutor(tutor, e)}
+                        disabled={!currentUser}
+                      >
+                        {currentUser ? 'Contact Tutor' : 'Sign in to Contact'}
                       </Button>
-                      <Button variant="outline" className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" size="sm">
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                        size="sm"
+                      >
                         View Profile
                       </Button>
                     </div>

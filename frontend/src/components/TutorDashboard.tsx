@@ -4,11 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import ClientDetailModal from './ClientDetailModal';
+import { useAuth } from '../contexts/AuthContext';
 
 const TutorDashboard: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     fetchClients();
@@ -42,6 +47,51 @@ const TutorDashboard: React.FC = () => {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
+  };
+
+  const handleClientClick = (client: Client) => {
+    setSelectedClient(client);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedClient(null);
+  };
+
+  const handleContactStudent = (client: Client, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent opening the detail modal
+    
+    if (!currentUser) {
+      alert('Please sign in to contact students.');
+      return;
+    }
+
+    const userName = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
+    const subject = encodeURIComponent(`Tutoring Opportunity - ${client.name}`);
+    const body = encodeURIComponent(`Hello,
+
+I'm interested in connecting with ${client.name} for tutoring services.
+
+Student Details:
+- Name: ${client.name}
+- Subjects of interest: ${client.subjects.join(', ')}
+- Budget: ${formatCurrency(client.budget)}/hr
+- Description: ${client.description || 'No description provided'}
+
+Please help me get in touch with this student to discuss:
+- My availability for tutoring sessions
+- My experience with their subjects of interest
+- Preferred meeting format (in-person/online)
+- Scheduling and session details
+
+Thank you!
+
+Best regards,
+${userName}`);
+
+    const mailtoLink = `mailto:jonathanschiff37@gmail.com?subject=${subject}&body=${body}`;
+    window.open(mailtoLink, '_blank');
   };
 
   if (loading) {
@@ -86,7 +136,7 @@ const TutorDashboard: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {clients.map((client) => (
-              <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700">
+              <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => handleClientClick(client)}>
                 <div className="p-6">
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="h-12 w-12 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold">
@@ -129,10 +179,20 @@ const TutorDashboard: React.FC = () => {
                     )}
 
                     <div className="pt-4 space-y-2">
-                      <Button className="w-full bg-green-600 hover:bg-green-700 text-white" size="sm">
-                        Contact Student
+                      <Button 
+                        className="w-full bg-green-600 hover:bg-green-700 text-white" 
+                        size="sm" 
+                        onClick={(e) => handleContactStudent(client, e)}
+                        disabled={!currentUser}
+                      >
+                        {currentUser ? 'Contact Student' : 'Sign in to Contact'}
                       </Button>
-                      <Button variant="outline" className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" size="sm">
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                        size="sm" 
+                        onClick={(e) => { e.stopPropagation(); handleClientClick(client); }}
+                      >
                         View Profile
                       </Button>
                     </div>
@@ -160,6 +220,14 @@ const TutorDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {selectedClient && (
+        <ClientDetailModal
+          client={selectedClient}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
