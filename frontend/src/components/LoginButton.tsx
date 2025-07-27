@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Button } from './ui/button';
 
 const LoginButton: React.FC = () => {
   const { currentUser, login } = useAuth();
@@ -19,9 +18,9 @@ const LoginButton: React.FC = () => {
   }
 
   return (
-    <Button
+    <button
       onClick={handleLogin}
-      className="flex items-center space-x-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+      className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       type="button"
     >
       <svg
@@ -29,6 +28,7 @@ const LoginButton: React.FC = () => {
         height="18"
         viewBox="0 0 24 24"
         className="flex-shrink-0"
+        aria-hidden="true"
       >
         <path
           fill="#4285F4"
@@ -47,8 +47,9 @@ const LoginButton: React.FC = () => {
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
         />
       </svg>
-      <span>Sign In</span>
-    </Button>
+      <span className="hidden sm:inline">Sign In</span>
+      <span className="sm:hidden">Sign In</span>
+    </button>
   );
 };
 

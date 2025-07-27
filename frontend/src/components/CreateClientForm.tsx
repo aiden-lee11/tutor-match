@@ -94,10 +94,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Create Student Profile</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+          <div className="p-6 sm:p-8">
+            <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
+              Create Student Profile
+            </h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
               Full Name
@@ -257,20 +261,22 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
           </button>
         </form>
 
-        {message && (
-          <div className={`mt-6 p-4 rounded-md ${
-            message.startsWith('Success') 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {message}
-            {message.startsWith('Success') && onProfileCompleted && (
-              <div className="mt-2 text-sm">
-                Redirecting to your dashboard...
+            {message && (
+              <div className={`mt-6 p-4 rounded-md ${
+                message.startsWith('Success') 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' 
+                  : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'
+              }`}>
+                <span>{message}</span>
+                {message.startsWith('Success') && onProfileCompleted && (
+                  <div className="mt-2 text-sm">
+                    Redirecting to your dashboard...
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -103,48 +103,52 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Create Tutor Profile</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              placeholder="Enter your full name"
-              required
-            />
-            {currentUser?.displayName && (
-              <p className="text-xs text-gray-500">Name is automatically filled from your account</p>
-            )}
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl">
+          <div className="p-6 sm:p-8">
+            <h1 className="text-responsive-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
+              Create Tutor Profile
+            </h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="name">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white transition-colors"
+                  placeholder="Enter your full name"
+                  required
+                />
+                {currentUser?.displayName && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Name is automatically filled from your account</p>
+                )}
+              </div>
 
-          <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50"
-              placeholder="Enter your email address"
-              readOnly={!!currentUser?.email}
-              required
-            />
-            {currentUser?.email && (
-              <p className="text-xs text-gray-500">Email is automatically filled from your account</p>
-            )}
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="email">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-gray-50 dark:bg-gray-600 dark:text-white transition-colors"
+                  placeholder="Enter your email address"
+                  readOnly={!!currentUser?.email}
+                  required
+                />
+                {currentUser?.email && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Email is automatically filled from your account</p>
+                )}
+              </div>
 
           <div className="space-y-2">
             <label htmlFor="subjects" className="block text-sm font-medium text-gray-700">
@@ -293,29 +297,37 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
             />
           </div>
 
-          <button 
-            type="submit" 
-            disabled={isLoading} 
-            className="w-full py-3 px-4 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? 'Creating Profile...' : 'Create Tutor Profile'}
-          </button>
+              <button 
+                type="submit" 
+                disabled={isLoading} 
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors flex items-center justify-center"
+              >
+                {isLoading && (
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                )}
+                {isLoading ? 'Creating Profile...' : 'Create Tutor Profile'}
+              </button>
         </form>
 
-        {message && (
-          <div className={`mt-6 p-4 rounded-md ${
-            message.startsWith('Success') 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {message}
-            {message.startsWith('Success') && onProfileCompleted && (
-              <div className="mt-2 text-sm">
-                Redirecting to your dashboard...
+            {message && (
+              <div className={`mt-6 p-4 rounded-md ${
+                message.startsWith('Success') 
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800' 
+                  : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'
+              }`}>
+                <span>{message}</span>
+                {message.startsWith('Success') && onProfileCompleted && (
+                  <div className="mt-2 text-sm">
+                    Redirecting to your dashboard...
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -73,10 +73,10 @@ const ClientDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Loading tutors...</p>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading tutors...</p>
         </div>
       </div>
     );
@@ -84,10 +84,10 @@ const ClientDashboard: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <p className="text-red-600 text-lg mb-4">{error}</p>
-          <Button onClick={fetchTutors} variant="outline">
+          <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
+          <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
             Try Again
           </Button>
         </div>
@@ -96,99 +96,113 @@ const ClientDashboard: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Your Perfect Tutor</h1>
-        <p className="text-lg text-gray-600">Browse our available tutors and find the perfect match for your learning needs.</p>
-      </div>
-
-      {!tutors || tutors.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-xl text-gray-500 mb-4">No tutors available at the moment.</p>
-          <Button onClick={fetchTutors} variant="outline">
-            Refresh
-          </Button>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Available Tutors</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Find qualified tutors in your subject areas.</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tutors.map((tutor) => (
-            <Card 
-              key={tutor.id} 
-              className="hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02] border-2 hover:border-blue-300"
-              onClick={() => handleTutorClick(tutor)}
-            >
-              <CardHeader className="pb-4">
-                <div className="flex items-center space-x-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">
+
+        {!tutors || tutors.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">No tutors available at the moment.</p>
+            <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+              Refresh
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tutors.map((tutor) => (
+              <div key={tutor.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => handleTutorClick(tutor)}>
+                <div className="p-6">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-semibold">
                       {getInitials(tutor.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-xl">{tutor.name}</CardTitle>
-                    <CardDescription className="flex items-center space-x-2">
-                      {tutor.rating && (
-                        <span className="text-sm">
-                          {renderStars(tutor.rating)} ({tutor.rating.toFixed(1)})
-                        </span>
-                      )}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-sm text-gray-700 mb-2">Subjects</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {tutor.subjects.map((subject, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {subject}
-                        </Badge>
-                      ))}
                     </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-sm text-gray-700 mb-2">Hourly Rate</h4>
-                    <p className="text-2xl font-bold text-green-600">
-                      {formatCurrency(tutor.pay)}/hr
-                    </p>
-                  </div>
-
-                  {tutor.bio && (
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 mb-2">About</h4>
-                      <p className="text-sm text-gray-600 line-clamp-3">
-                        {tutor.bio}
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{tutor.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {tutor.email}
                       </p>
                     </div>
-                  )}
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Subjects</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {tutor.subjects.map((subject, index) => (
+                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                            {subject}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
 
-                  <div className="pt-4">
-                    <Button 
-                      className="w-full" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleTutorClick(tutor);
-                      }}
-                    >
-                      View Profile
-                    </Button>
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rate</h4>
+                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        {formatCurrency(tutor.pay)}/hr
+                      </p>
+                    </div>
+
+                                         <div>
+                       <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rating</h4>
+                       <div className="flex items-center">
+                         <span className="text-yellow-500 mr-2">{renderStars(tutor.rating || 0)}</span>
+                         <span className="text-sm text-gray-600 dark:text-gray-400">({tutor.rating || 0})</span>
+                       </div>
+                     </div>
+
+                    {tutor.bio && (
+                      <div>
+                        <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Bio</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                          {tutor.bio}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="pt-4 space-y-2">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm">
+                        Contact Tutor
+                      </Button>
+                      <Button variant="outline" className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" size="sm">
+                        View Profile
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              </div>
+            ))}
+          </div>
+        )}
 
-      <TutorDetailModal
-        tutor={selectedTutor}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+        <div className="mt-12 text-center">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Ready to find your perfect tutor?</h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+              Browse through our qualified tutors and find the perfect match for your learning needs.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+                Update My Profile
+              </Button>
+              <Button variant="outline" size="lg" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                View All Tutors
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {selectedTutor && (
+        <TutorDetailModal
+          tutor={selectedTutor}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
