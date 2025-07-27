@@ -17,7 +17,6 @@ import { apiService } from './services/api'
 // Home Page Component
 const HomePage: React.FC = () => {
   const { currentUser, userType, hasCompletedProfile } = useAuth();
-  const [backendStatus, setBackendStatus] = React.useState<string>('Checking...');
 
   useEffect(() => {
     checkBackendConnection();
@@ -26,9 +25,9 @@ const HomePage: React.FC = () => {
   const checkBackendConnection = async () => {
     try {
       const response = await apiService.healthCheck();
-      setBackendStatus(`✅ Backend: ${response.message}`);
+      console.log(`✅ Backend: ${response.message}`);
     } catch (error) {
-      setBackendStatus('❌ Backend: Not connected');
+      console.log('❌ Backend: Not connected');
     }
   };
 
@@ -288,17 +287,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </footer>
     </div>
   );
-};
-
-// Protected Route Component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { currentUser } = useAuth();
-  
-  if (!currentUser) {
-    return <Navigate to="/" replace />;
-  }
-  
-  return <>{children}</>;
 };
 
 // App Routes Component

@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { apiService, type Client } from '../services/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Avatar, AvatarFallback } from './ui/avatar';
 import ClientDetailModal from './ClientDetailModal';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -15,7 +11,6 @@ const TutorDashboard: React.FC = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentUser, login } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchClients();

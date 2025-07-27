@@ -1,9 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { type Tutor } from '../services/api';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Avatar, AvatarFallback } from './ui/avatar';
 import { useAuth } from '../contexts/AuthContext';
 
 interface TutorDetailModalProps {

@@ -1,5 +1,3 @@
-const API_BASE_URL = 'http://localhost:8080/api';
-
 export interface Tutor {
   id?: number;
   name: string;
@@ -40,7 +38,7 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}${endpoint}`;
     
     const config: RequestInit = {
       headers: {
@@ -143,7 +141,7 @@ class ApiService {
 
   // Health check
   async healthCheck(): Promise<{ status: string; message: string }> {
-    const response = await fetch('http://localhost:8080/health');
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/health`);
     return response.json();
   }
 }
