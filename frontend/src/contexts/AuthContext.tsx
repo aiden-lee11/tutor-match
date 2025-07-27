@@ -118,6 +118,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (user) {
         // Check for existing profile in database
         await checkExistingProfile(user);
+        
+        // Clear any stored redirect path when user signs in
+        localStorage.removeItem('redirectAfterLogin');
       } else {
         // Clear state when user logs out
         setUserType(null);

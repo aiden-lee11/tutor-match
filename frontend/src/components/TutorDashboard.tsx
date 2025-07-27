@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService, type Client } from '../services/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -13,7 +14,8 @@ const TutorDashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentUser } = useAuth();
+  const { currentUser, login } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchClients();
@@ -59,11 +61,17 @@ const TutorDashboard: React.FC = () => {
     setSelectedClient(null);
   };
 
-  const handleContactStudent = (client: Client, event: React.MouseEvent) => {
+  const handleContactStudent = async (client: Client, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent opening the detail modal
     
     if (!currentUser) {
-      alert('Please sign in to contact students.');
+      try {
+        await login();
+        // After successful login, the user can click the button again to contact
+      } catch (error) {
+        console.error('Login failed:', error);
+        alert('Failed to sign in. Please try again.');
+      }
       return;
     }
 
@@ -136,8 +144,8 @@ ${userName}`);
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {clients.map((client) => (
-              <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => handleClientClick(client)}>
-                <div className="p-6">
+              <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleClientClick(client)}>
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="h-12 w-12 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold">
                       {getInitials(client.name)}
@@ -150,7 +158,7 @@ ${userName}`);
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="flex-1 space-y-4">
                     <div>
                       <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Looking for help with</h4>
                       <div className="flex flex-wrap gap-2">
@@ -177,25 +185,24 @@ ${userName}`);
                         </p>
                       </div>
                     )}
+                  </div>
 
-                    <div className="pt-4 space-y-2">
-                      <Button 
-                        className="w-full bg-green-600 hover:bg-green-700 text-white" 
-                        size="sm" 
-                        onClick={(e) => handleContactStudent(client, e)}
-                        disabled={!currentUser}
-                      >
-                        {currentUser ? 'Contact Student' : 'Sign in to Contact'}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
-                        size="sm" 
-                        onClick={(e) => { e.stopPropagation(); handleClientClick(client); }}
-                      >
-                        View Profile
-                      </Button>
-                    </div>
+                  <div className="pt-4 space-y-2 mt-auto">
+                    <Button 
+                      className="w-full bg-green-600 hover:bg-green-700 text-white" 
+                      size="sm" 
+                      onClick={(e) => handleContactStudent(client, e)}
+                    >
+                      {currentUser ? 'Contact Student' : 'Sign in to Contact'}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                      size="sm" 
+                      onClick={(e) => { e.stopPropagation(); handleClientClick(client); }}
+                    >
+                      View Profile
+                    </Button>
                   </div>
                 </div>
               </div>

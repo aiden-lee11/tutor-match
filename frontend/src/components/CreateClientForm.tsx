@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService, type Client } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,6 +9,7 @@ interface CreateClientFormProps {
 
 const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted }) => {
   const { setProfileCompleted, currentUser } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -85,6 +87,11 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
         setTimeout(() => {
           onProfileCompleted();
         }, 2000); // Show success message for 2 seconds before redirecting
+      } else {
+        // Navigate to client dashboard after successful creation
+        setTimeout(() => {
+          navigate('/client-dashboard');
+        }, 2000);
       }
     } catch (error) {
       setMessage(`Error: ${error instanceof Error ? error.message : 'Failed to create client'}`);

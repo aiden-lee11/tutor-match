@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService, type Tutor } from '../services/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -13,7 +14,8 @@ const ClientDashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentUser } = useAuth();
+  const { currentUser, login } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTutors();
@@ -73,11 +75,17 @@ const ClientDashboard: React.FC = () => {
     setSelectedTutor(null);
   };
 
-  const handleContactTutor = (tutor: Tutor, event: React.MouseEvent) => {
+  const handleContactTutor = async (tutor: Tutor, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent opening the detail modal
     
     if (!currentUser) {
-      alert('Please sign in to contact tutors.');
+      try {
+        await login();
+        // After successful login, the user can click the button again to contact
+      } catch (error) {
+        console.error('Login failed:', error);
+        alert('Failed to sign in. Please try again.');
+      }
       return;
     }
 
@@ -149,8 +157,8 @@ ${userName}`);
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tutors.map((tutor) => (
-              <div key={tutor.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer" onClick={() => handleTutorClick(tutor)}>
-                <div className="p-6">
+              <div key={tutor.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleTutorClick(tutor)}>
+                <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-semibold">
                       {getInitials(tutor.name)}
@@ -163,7 +171,7 @@ ${userName}`);
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
+                  <div className="flex-1 space-y-4">
                     <div>
                       <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Subjects</h4>
                       <div className="flex flex-wrap gap-2">
@@ -182,13 +190,13 @@ ${userName}`);
                       </p>
                     </div>
 
-                                         <div>
-                       <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rating</h4>
-                       <div className="flex items-center">
-                         <span className="text-yellow-500 mr-2">{renderStars(tutor.rating || 0)}</span>
-                         <span className="text-sm text-gray-600 dark:text-gray-400">({tutor.rating || 0})</span>
-                       </div>
-                     </div>
+                    <div>
+                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rating</h4>
+                      <div className="flex items-center">
+                        <span className="text-yellow-500 mr-2">{renderStars(tutor.rating || 0)}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">({tutor.rating || 0})</span>
+                      </div>
+                    </div>
 
                     {tutor.bio && (
                       <div>
@@ -198,24 +206,23 @@ ${userName}`);
                         </p>
                       </div>
                     )}
+                  </div>
 
-                    <div className="pt-4 space-y-2">
-                      <Button 
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
-                        size="sm"
-                        onClick={(e) => handleContactTutor(tutor, e)}
-                        disabled={!currentUser}
-                      >
-                        {currentUser ? 'Contact Tutor' : 'Sign in to Contact'}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
-                        size="sm"
-                      >
-                        View Profile
-                      </Button>
-                    </div>
+                  <div className="pt-4 space-y-2 mt-auto">
+                    <Button 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+                      size="sm"
+                      onClick={(e) => handleContactTutor(tutor, e)}
+                    >
+                      {currentUser ? 'Contact Tutor' : 'Sign in to Contact'}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                      size="sm"
+                    >
+                      View Profile
+                    </Button>
                   </div>
                 </div>
               </div>

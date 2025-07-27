@@ -82,47 +82,49 @@ ${userName}`);
   };
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Student Profile</h2>
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
+      <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Student Profile</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl font-bold"
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl font-bold p-1"
           >
             ×
           </button>
         </div>
         
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="border-0 shadow-none">
             <div className="px-0 pt-0">
-              <div className="flex items-center space-x-6">
-                <div className="h-20 w-20 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold text-2xl">
-                  {getInitials(client.name)}
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <div className="flex items-center space-x-4 sm:space-x-6">
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold text-xl sm:text-2xl">
+                    {getInitials(client.name)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 truncate">{client.name}</h3>
+                    {client.email && (
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-1 sm:mb-2 truncate">{client.email}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{client.name}</h3>
-                  {client.email && (
-                    <p className="text-gray-600 dark:text-gray-300 mb-2">{client.email}</p>
-                  )}
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Budget</p>
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+                <div className="text-center sm:text-right">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Budget</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">
                     {formatCurrency(client.budget)}/hr
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="px-0 space-y-6">
+            <div className="px-0 space-y-4 sm:space-y-6 mt-6">
               {/* Subjects */}
               <div>
-                <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Looking for help with</h4>
+                <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">Looking for help with</h4>
                 <div className="flex flex-wrap gap-2">
                   {client.subjects.map((subject, index) => (
-                    <span key={index} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                    <span key={index} className="inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
                       {subject}
                     </span>
                   ))}
@@ -132,58 +134,58 @@ ${userName}`);
               {/* Description */}
               {client.description && (
                 <div>
-                  <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">About</h4>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">About</h4>
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                     {client.description}
                   </p>
                 </div>
               )}
 
               {/* Additional Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {client.location && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Location</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{client.location}</p>
+                    <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">Location</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{client.location}</p>
                   </div>
                 )}
 
                 {client.language && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Languages</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{client.language}</p>
+                    <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">Languages</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{client.language}</p>
                   </div>
                 )}
 
                 {client.availability && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Availability</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{client.availability}</p>
+                    <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">Availability</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{client.availability}</p>
                   </div>
                 )}
 
                 {client.education && (
                   <div>
-                    <h4 className="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-3">Education Level</h4>
-                    <p className="text-gray-600 dark:text-gray-300">{client.education}</p>
+                    <h4 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200 mb-2 sm:mb-3">Education Level</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{client.education}</p>
                   </div>
                 )}
               </div>
 
               {/* Contact Actions */}
-              <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex flex-col sm:flex-row gap-4">
+              <div className="pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <Button 
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white h-12 sm:h-10"
                     onClick={handleContactStudent}
                     data-contact-student-button
                     disabled={!currentUser}
                   >
                     {currentUser ? 'Contact Student' : 'Sign in to Contact'}
                   </Button>
-                  <Button variant="outline" className="flex-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  {/* <Button variant="outline" className="flex-1 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 h-12 sm:h-10">
                     Schedule Session
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-responsive-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Welcome to Tutor Platform!
+              Welcome to Tutor Match!
             </h1>
             <p className="text-responsive-lg text-gray-600 dark:text-gray-300 mb-2">
               Hi there, {userEmail}
@@ -29,55 +29,63 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Student Card */}
             <div 
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 cursor-pointer group"
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 cursor-pointer group flex flex-col h-full"
               onClick={() => onSelectType('student')}
             >
-              <div className="p-6 sm:p-8 text-center">
-                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
-                  <BookOpen className="w-8 h-8" />
+              <div className="p-6 sm:p-8 text-center flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                    <BookOpen className="w-8 h-8" />
+                  </div>
+                  <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-3">
+                    Find a Tutor
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                    I'm a student looking for help with my studies
+                  </p>
                 </div>
-                <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-3">
-                  Find a Tutor
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  I'm a student looking for help with my studies
-                </p>
-                <Button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectType('student');
-                  }}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
-                >
-                  I'm a Student
-                </Button>
+                <div className="mt-auto">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectType('student');
+                    }}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
+                  >
+                    I'm a Student
+                  </Button>
+                </div>
               </div>
             </div>
 
             {/* Tutor Card */}
             <div 
-              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl hover:border-green-300 dark:hover:border-green-600 transition-all duration-300 cursor-pointer group"
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg hover:shadow-xl hover:border-green-300 dark:hover:border-green-600 transition-all duration-300 cursor-pointer group flex flex-col h-full"
               onClick={() => onSelectType('tutor')}
             >
-              <div className="p-6 sm:p-8 text-center">
-                <div className="w-16 h-16 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
-                  <GraduationCap className="w-8 h-8" />
+              <div className="p-6 sm:p-8 text-center flex flex-col h-full">
+                <div className="flex-1">
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                    <GraduationCap className="w-8 h-8" />
+                  </div>
+                  <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-3">
+                    Become a Tutor
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                    I want to teach and help students learn
+                  </p>
                 </div>
-                <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-3">
-                  Become a Tutor
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  I want to teach and help students learn
-                </p>
-                <Button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectType('tutor');
-                  }}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium"
-                >
-                  I'm a Tutor
-                </Button>
+                <div className="mt-auto">
+                  <Button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectType('tutor');
+                    }}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium"
+                  >
+                    I'm a Tutor
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiService, type Tutor } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,6 +9,7 @@ interface CreateTutorFormProps {
 
 const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted }) => {
   const { setProfileCompleted, currentUser } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -94,6 +96,11 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
         setTimeout(() => {
           onProfileCompleted();
         }, 2000); // Show success message for 2 seconds before redirecting
+      } else {
+        // Navigate to tutor dashboard after successful creation
+        setTimeout(() => {
+          navigate('/tutor-dashboard');
+        }, 2000);
       }
     } catch (error) {
       setMessage(`Error: ${error instanceof Error ? error.message : 'Failed to create tutor'}`);
