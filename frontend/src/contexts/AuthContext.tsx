@@ -9,6 +9,7 @@ interface AuthContextType {
   currentUser: User | null;
   userType: UserType;
   hasCompletedProfile: boolean;
+  isAdmin: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
   setUserType: (type: UserType) => void;
@@ -34,7 +35,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userType, setUserType] = useState<UserType>(null);
   const [hasCompletedProfile, setHasCompletedProfile] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Admin email list - you can configure this or move to environment variables
+  const adminEmails: string[] = import.meta.env.VITE_ADMIN_EMAILS?.split(',') || [];
+
+  const checkAdminStatus = (email: string | null) => {
+    if (!email) {
+      setIsAdmin(false);
+      return false;
+    }
+    const adminStatus = adminEmails.some(adminEmail => 
+      email.toLowerCase() === adminEmail.toLowerCase()
+    );
+    setIsAdmin(adminStatus);
+    return adminStatus;
+  };
 
   const login = async () => {
     try {
@@ -53,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.removeItem('hasCompletedProfile');
       setUserType(null);
       setHasCompletedProfile(false);
+      setIsAdmin(false);
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;
@@ -116,6 +134,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setCurrentUser(user);
       
       if (user) {
+        // Check admin status
+        checkAdminStatus(user.email);
+        
         // Check for existing profile in database
         await checkExistingProfile(user);
         
@@ -125,6 +146,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Clear state when user logs out
         setUserType(null);
         setHasCompletedProfile(false);
+        setIsAdmin(false);
         localStorage.removeItem('userType');
         localStorage.removeItem('hasCompletedProfile');
       }
@@ -139,6 +161,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     currentUser,
     userType,
     hasCompletedProfile,
+    isAdmin,
     login,
     logout,
     setUserType: setUserTypeAndPersist,

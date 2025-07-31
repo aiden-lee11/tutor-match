@@ -10,6 +10,7 @@ import CreateTutorForm from './components/CreateTutorForm'
 import CreateClientForm from './components/CreateClientForm'
 import ClientDashboard from './components/ClientDashboard'
 import TutorDashboard from './components/TutorDashboard'
+import AdminDashboard from './components/AdminDashboard'
 import UserTypeSelection from './components/UserTypeSelection'
 import ThemeToggle from './components/ThemeToggle'
 import { apiService } from './services/api'
@@ -190,7 +191,7 @@ const HomePage: React.FC = () => {
 
 // Layout Component with Header and Footer
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { currentUser, userType, hasCompletedProfile } = useAuth();
+  const { currentUser, userType, hasCompletedProfile, isAdmin } = useAuth();
   const location = useLocation();
 
   return (
@@ -252,6 +253,18 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   >
                     View Students
                   </Link>
+                  {isAdmin && (
+                    <Link 
+                      to="/admin"
+                      className={`px-3 py-2 rounded-md text-sm font-medium ${
+                        location.pathname === '/admin' 
+                          ? 'bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100' 
+                          : 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'
+                      }`}
+                    >
+                      Admin
+                    </Link>
+                  )}
                 </>
               )}
             </div>
@@ -356,6 +369,11 @@ const AppRoutes: React.FC = () => {
       <Route path="/tutor-dashboard" element={
         <Layout>
           <TutorDashboard />
+        </Layout>
+      } />
+      <Route path="/admin" element={
+        <Layout>
+          <AdminDashboard />
         </Layout>
       } />
       <Route path="*" element={<Navigate to="/" replace />} />

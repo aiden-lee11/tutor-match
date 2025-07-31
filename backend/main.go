@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"tutor-backend/database"
 	"tutor-backend/handlers"
+	"tutor-backend/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -47,7 +48,7 @@ func main() {
 		}
 
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-User-Email")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
@@ -77,6 +78,22 @@ func main() {
 		api.GET("/clients", handlers.GetClients)
 		api.POST("/clients", handlers.CreateClient)
 		api.GET("/clients/by-email/:email", handlers.GetClientByEmail)
+
+		// Admin routes (protected)
+		admin := api.Group("/admin")
+		admin.Use(middleware.AdminAuth())
+		{
+			// Admin stats
+			admin.GET("/stats", handlers.GetAdminStats)
+
+			// Admin tutor management
+			admin.PUT("/tutors/:id", handlers.UpdateTutor)
+			admin.DELETE("/tutors/:id", handlers.DeleteTutor)
+
+			// Admin client management
+			admin.PUT("/clients/:id", handlers.UpdateClient)
+			admin.DELETE("/clients/:id", handlers.DeleteClient)
+		}
 	}
 
 	// Get port from environment variable or use default

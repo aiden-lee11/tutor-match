@@ -10,21 +10,21 @@ import (
 
 // Tutor represents a tutor in the system
 type Tutor struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Subjects  []string  `json:"subjects"`
-	Pay       float64   `json:"pay"`
-	Rating    float64   `json:"rating"`
-	Bio       string    `json:"bio"`
-	Language  string    `json:"language"`
-	Location  string    `json:"location"`
-	Availability string    `json:"availability"`
-	Experience string    `json:"experience"`
-	Education string    `json:"education"`
+	ID            int       `json:"id"`
+	Name          string    `json:"name"`
+	Email         string    `json:"email"`
+	Subjects      []string  `json:"subjects"`
+	Pay           float64   `json:"pay"`
+	Rating        float64   `json:"rating"`
+	Bio           string    `json:"bio"`
+	Language      string    `json:"language"`
+	Location      string    `json:"location"`
+	Availability  string    `json:"availability"`
+	Experience    string    `json:"experience"`
+	Education     string    `json:"education"`
 	Certification string    `json:"certification"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 // GetTutors returns all tutors from the database
@@ -221,6 +221,65 @@ func GetTutorByEmail(email string) (*Tutor, error) {
 	return &tutor, nil
 }
 
+// UpdateTutor updates an existing tutor in the database
+func UpdateTutor(tutor *Tutor) error {
+	db := database.GetDB()
+	if db == nil {
+		return nil // Skip database operations if not available
+	}
+
+	query := `
+		UPDATE tutors 
+		SET name = $2, email = $3, subjects = $4, pay = $5, rating = $6, bio = $7, 
+		    language = $8, location = $9, availability = $10, experience = $11, 
+		    education = $12, certification = $13, updated_at = CURRENT_TIMESTAMP
+		WHERE id = $1
+		RETURNING updated_at
+	`
+
+	err := db.QueryRow(
+		context.Background(),
+		query,
+		tutor.ID,
+		tutor.Name,
+		tutor.Email,
+		tutor.Subjects,
+		tutor.Pay,
+		tutor.Rating,
+		tutor.Bio,
+		tutor.Language,
+		tutor.Location,
+		tutor.Availability,
+		tutor.Experience,
+		tutor.Education,
+		tutor.Certification,
+	).Scan(&tutor.UpdatedAt)
+
+	return err
+}
+
+// DeleteTutor removes a tutor from the database
+func DeleteTutor(id int) error {
+	db := database.GetDB()
+	if db == nil {
+		return nil // Skip database operations if not available
+	}
+
+	query := `DELETE FROM tutors WHERE id = $1`
+
+	result, err := db.Exec(context.Background(), query, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected := result.RowsAffected()
+	if rowsAffected == 0 {
+		return pgx.ErrNoRows
+	}
+
+	return nil
+}
+
 // getSampleTutors returns sample tutor data (fallback when database is not available)
 func getSampleTutors() []Tutor {
 	return []Tutor{
@@ -243,4 +302,4 @@ func getSampleTutors() []Tutor {
 			Bio:      "English literature expert specializing in creative writing and essay composition",
 		},
 	}
-} 
+}

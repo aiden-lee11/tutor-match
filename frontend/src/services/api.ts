@@ -63,6 +63,37 @@ class ApiService {
     }
   }
 
+  private async adminRequest<T>(
+    endpoint: string,
+    userEmail: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
+    const url = `${import.meta.env.VITE_API_BASE_URL}${endpoint}`;
+    
+    const config: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-User-Email': userEmail,
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    try {
+      const response = await fetch(url, config);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Admin API request failed:', error);
+      throw error;
+    }
+  }
+
   // Tutor endpoints
   async getTutors(): Promise<ApiResponse<Tutor[]>> {
     return this.request<Tutor[]>('/tutors');
@@ -143,6 +174,45 @@ class ApiService {
   async healthCheck(): Promise<{ status: string; message: string }> {
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/health`);
     return response.json();
+  }
+
+  // Admin endpoints
+  async getAdminStats(userEmail: string): Promise<ApiResponse<{
+    tutors_count: number;
+    clients_count: number;
+    total_users: number;
+  }>> {
+    return this.adminRequest<{
+      tutors_count: number;
+      clients_count: number;
+      total_users: number;
+    }>('/admin/stats', userEmail);
+  }
+
+  async updateTutor(id: number, tutor: Omit<Tutor, 'id'>, userEmail: string): Promise<ApiResponse<Tutor>> {
+    return this.adminRequest<Tutor>(`/admin/tutors/${id}`, userEmail, {
+      method: 'PUT',
+      body: JSON.stringify(tutor),
+    });
+  }
+
+  async deleteTutor(id: number, userEmail: string): Promise<ApiResponse<null>> {
+    return this.adminRequest<null>(`/admin/tutors/${id}`, userEmail, {
+      method: 'DELETE',
+    });
+  }
+
+  async updateClient(id: number, client: Omit<Client, 'id'>, userEmail: string): Promise<ApiResponse<Client>> {
+    return this.adminRequest<Client>(`/admin/clients/${id}`, userEmail, {
+      method: 'PUT',
+      body: JSON.stringify(client),
+    });
+  }
+
+  async deleteClient(id: number, userEmail: string): Promise<ApiResponse<null>> {
+    return this.adminRequest<null>(`/admin/clients/${id}`, userEmail, {
+      method: 'DELETE',
+    });
   }
 }
 
