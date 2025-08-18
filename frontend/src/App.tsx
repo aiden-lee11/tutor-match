@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom'
-import { BookOpen, GraduationCap } from 'lucide-react'
+import { BookOpen, GraduationCap, Menu, X, Home, Users, UserCheck, Shield } from 'lucide-react'
 import './App.css'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
@@ -193,6 +193,7 @@ const HomePage: React.FC = () => {
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { currentUser, userType, hasCompletedProfile, isAdmin } = useAuth();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -201,14 +202,13 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              {/* Mobile menu button */}
-              <div className="lg:hidden">
-                <button className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
-                  </svg>
-                </button>
-              </div>
+              {/* Hamburger menu button */}
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 mr-3"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
               
               {/* Logo */}
               <Link 
@@ -217,56 +217,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               >
                 Tutor Match
               </Link>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-4">
-              {(!currentUser || (currentUser && userType && hasCompletedProfile)) && (
-                <>
-                  <Link 
-                    to="/"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/' 
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' 
-                        : 'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white'
-                    }`}
-                  >
-                    Home
-                  </Link>
-                  <Link 
-                    to="/client-dashboard"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/client-dashboard' 
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' 
-                        : 'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white'
-                    }`}
-                  >
-                    Browse Tutors
-                  </Link>
-                  <Link 
-                    to="/tutor-dashboard"
-                    className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/tutor-dashboard' 
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white' 
-                        : 'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white'
-                    }`}
-                  >
-                    View Students
-                  </Link>
-                  {isAdmin && (
-                    <Link 
-                      to="/admin"
-                      className={`px-3 py-2 rounded-md text-sm font-medium ${
-                        location.pathname === '/admin' 
-                          ? 'bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100' 
-                          : 'text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'
-                      }`}
-                    >
-                      Admin
-                    </Link>
-                  )}
-                </>
-              )}
             </div>
 
             {/* Header Actions */}
@@ -278,6 +228,121 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
       </header>
+
+      {/* Sidebar Overlay - Transparent click area to close sidebar */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="p-4">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Navigation</h2>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="space-y-2">
+            <Link 
+              to="/"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/' 
+                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Home className="w-5 h-5 mr-3" />
+              Home
+            </Link>
+            <Link 
+              to="/client-dashboard"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/client-dashboard' 
+                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              <BookOpen className="w-5 h-5 mr-3" />
+              Browse Tutors
+            </Link>
+            <Link 
+              to="/tutor-dashboard"
+              onClick={() => setIsSidebarOpen(false)}
+              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                location.pathname === '/tutor-dashboard' 
+                  ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' 
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
+            >
+              <Users className="w-5 h-5 mr-3" />
+              View Students
+            </Link>
+            
+            {/* Profile Creation Links */}
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                Create Profile
+              </p>
+              <Link 
+                to="/create-client"
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                  location.pathname === '/create-client' 
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                <UserCheck className="w-5 h-5 mr-3" />
+                Student Profile
+              </Link>
+              <Link 
+                to="/create-tutor"
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                  location.pathname === '/create-tutor' 
+                    ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' 
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                <GraduationCap className="w-5 h-5 mr-3" />
+                Tutor Profile
+              </Link>
+            </div>
+
+            {/* Admin Link */}
+            {isAdmin && (
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <Link 
+                  to="/admin"
+                  onClick={() => setIsSidebarOpen(false)}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                    location.pathname === '/admin' 
+                      ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' 
+                      : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                  }`}
+                >
+                  <Shield className="w-5 h-5 mr-3" />
+                  Admin Dashboard
+                </Link>
+              </div>
+            )}
+          </nav>
+        </div>
+      </div>
 
       {/* Main Content */}
       <div className="min-h-screen">
@@ -321,28 +386,7 @@ const AppRoutes: React.FC = () => {
     );
   }
 
-  // Show profile creation if user has selected type but hasn't completed profile
-  if (currentUser && userType && !hasCompletedProfile) {
-    if (userType === 'tutor') {
-      return (
-        <Layout>
-          <CreateTutorForm onProfileCompleted={() => {
-            // Navigate to tutor dashboard after profile completion
-            navigate('/tutor-dashboard');
-          }} />
-        </Layout>
-      );
-    } else {
-      return (
-        <Layout>
-          <CreateClientForm onProfileCompleted={() => {
-            // Navigate to client dashboard after profile completion
-            navigate('/client-dashboard');
-          }} />
-        </Layout>
-      );
-    }
-  }
+  // Note: Removed forced profile creation - users can now browse without completing profiles
 
   return (
     <Routes>

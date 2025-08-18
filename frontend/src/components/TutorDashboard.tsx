@@ -6,21 +6,108 @@ import { useAuth } from '../contexts/AuthContext';
 
 const TutorDashboard: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
+  const [filteredClients, setFilteredClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const { currentUser, login } = useAuth();
+
+  // Education categories
+  const educationCategories = [
+    { id: 'all', name: 'All Categories', icon: '📚' },
+    { id: 'elementary', name: 'Elementary School', icon: '🎒' },
+    { id: 'middle', name: 'Middle School', icon: '📖' },
+    { id: 'high', name: 'High School', icon: '🎓' },
+    { id: 'college', name: 'College Application', icon: '🏛️' },
+    { id: 'medical', name: 'Med School Application', icon: '⚕️' },
+    { id: 'job', name: 'Job Application', icon: '💼' }
+  ];
 
   useEffect(() => {
     fetchClients();
   }, []);
+
+  // Filter clients based on selected category
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setFilteredClients(clients);
+    } else {
+      const filtered = clients.filter(client => {
+        const clientSubjects = client.subjects.map(s => s.toLowerCase());
+        const clientEducation = client.education?.toLowerCase() || '';
+        
+        switch (selectedCategory) {
+          case 'elementary':
+            return clientSubjects.some(subject => 
+              subject.includes('elementary') || 
+              subject.includes('basic') ||
+              subject.includes('kindergarten') ||
+              subject.includes('grade 1') || subject.includes('grade 2') || subject.includes('grade 3') ||
+              subject.includes('grade 4') || subject.includes('grade 5')
+            ) || clientEducation.includes('elementary');
+          case 'middle':
+            return clientSubjects.some(subject => 
+              subject.includes('middle') || 
+              subject.includes('grade 6') || subject.includes('grade 7') || subject.includes('grade 8') ||
+              subject.includes('intermediate')
+            ) || clientEducation.includes('middle');
+          case 'high':
+            return clientSubjects.some(subject => 
+              subject.includes('high school') || 
+              subject.includes('grade 9') || subject.includes('grade 10') || 
+              subject.includes('grade 11') || subject.includes('grade 12') ||
+              subject.includes('ap ') || subject.includes('advanced placement') ||
+              subject.includes('ib ') || subject.includes('international baccalaureate') ||
+              subject.includes('sat') || subject.includes('act') ||
+              subject.includes('algebra') || subject.includes('geometry') || 
+              subject.includes('calculus') || subject.includes('physics') ||
+              subject.includes('chemistry') || subject.includes('biology')
+            ) || clientEducation.includes('high school');
+          case 'college':
+            return clientSubjects.some(subject => 
+              subject.includes('college') || 
+              subject.includes('university') ||
+              subject.includes('admission') ||
+              subject.includes('application') ||
+              subject.includes('essay writing') ||
+              subject.includes('personal statement')
+            ) || clientEducation.includes('college') || clientEducation.includes('university');
+          case 'medical':
+            return clientSubjects.some(subject => 
+              subject.includes('mcat') || 
+              subject.includes('medical') ||
+              subject.includes('pre-med') ||
+              subject.includes('premed') ||
+              subject.includes('med school') ||
+              subject.includes('anatomy') ||
+              subject.includes('physiology') ||
+              subject.includes('biochemistry')
+            ) || clientEducation.includes('medical') || clientEducation.includes('pre-med');
+          case 'job':
+            return clientSubjects.some(subject => 
+              subject.includes('job') || 
+              subject.includes('career') ||
+              subject.includes('interview') ||
+              subject.includes('resume') ||
+              subject.includes('professional') ||
+              subject.includes('workplace')
+            );
+          default:
+            return true;
+        }
+      });
+      setFilteredClients(filtered);
+    }
+  }, [clients, selectedCategory]);
 
   const fetchClients = async () => {
     try {
       setLoading(true);
       const response = await apiService.getClients();
       setClients(response.data);
+      setFilteredClients(response.data);
       setError('');
     } catch (err) {
       setError('Failed to load clients. Please try again.');
@@ -129,16 +216,65 @@ ${userName}`);
           <p className="text-lg text-gray-600 dark:text-gray-300">Connect with students who are looking for tutoring in your subject areas.</p>
         </div>
 
-        {!clients || clients.length === 0 ? (
+        {/* Education Category Filter */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Browse by Education Level</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+            {educationCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`p-3 rounded-lg border text-center transition-all duration-200 ${
+                  selectedCategory === category.id
+                    ? 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-600 text-green-700 dark:text-green-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <div className="text-2xl mb-1">{category.icon}</div>
+                <div className="text-xs font-medium">{category.name}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results Counter */}
+        {!loading && filteredClients && (
+          <div className="mb-6">
+            <p className="text-gray-600 dark:text-gray-400">
+              Showing {filteredClients.length} of {clients.length} students
+              {selectedCategory !== 'all' && (
+                <span> for {educationCategories.find(cat => cat.id === selectedCategory)?.name}</span>
+              )}
+            </p>
+          </div>
+        )}
+
+        {!filteredClients || filteredClients.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">No clients available at the moment.</p>
-            <Button onClick={fetchClients} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-              Refresh
-            </Button>
+            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">
+              {selectedCategory === 'all' 
+                ? 'No students available at the moment.' 
+                : `No students found for ${educationCategories.find(cat => cat.id === selectedCategory)?.name}.`
+              }
+            </p>
+            <div className="space-y-3">
+              {selectedCategory !== 'all' && (
+                <Button 
+                  onClick={() => setSelectedCategory('all')} 
+                  variant="outline" 
+                  className="border-green-300 dark:border-green-600 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900"
+                >
+                  View All Students
+                </Button>
+              )}
+              <Button onClick={fetchClients} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                Refresh
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clients.map((client) => (
+            {filteredClients.map((client) => (
               <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleClientClick(client)}>
                 <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">

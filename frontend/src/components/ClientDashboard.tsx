@@ -6,21 +6,107 @@ import { useAuth } from '../contexts/AuthContext';
 
 const ClientDashboard: React.FC = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [filteredTutors, setFilteredTutors] = useState<Tutor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const { currentUser, login } = useAuth();
+
+  // Education categories
+  const educationCategories = [
+    { id: 'all', name: 'All Categories', icon: '📚' },
+    { id: 'elementary', name: 'Elementary School', icon: '🎒' },
+    { id: 'middle', name: 'Middle School', icon: '📖' },
+    { id: 'high', name: 'High School', icon: '🎓' },
+    { id: 'college', name: 'College Application', icon: '🏛️' },
+    { id: 'medical', name: 'Med School Application', icon: '⚕️' },
+    { id: 'job', name: 'Job Application', icon: '💼' }
+  ];
 
   useEffect(() => {
     fetchTutors();
   }, []);
+
+  // Filter tutors based on selected category
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setFilteredTutors(tutors);
+    } else {
+      const filtered = tutors.filter(tutor => {
+        const tutorSubjects = tutor.subjects.map(s => s.toLowerCase());
+        
+        switch (selectedCategory) {
+          case 'elementary':
+            return tutorSubjects.some(subject => 
+              subject.includes('elementary') || 
+              subject.includes('basic') ||
+              subject.includes('kindergarten') ||
+              subject.includes('grade 1') || subject.includes('grade 2') || subject.includes('grade 3') ||
+              subject.includes('grade 4') || subject.includes('grade 5')
+            );
+          case 'middle':
+            return tutorSubjects.some(subject => 
+              subject.includes('middle') || 
+              subject.includes('grade 6') || subject.includes('grade 7') || subject.includes('grade 8') ||
+              subject.includes('intermediate')
+            );
+          case 'high':
+            return tutorSubjects.some(subject => 
+              subject.includes('high school') || 
+              subject.includes('grade 9') || subject.includes('grade 10') || 
+              subject.includes('grade 11') || subject.includes('grade 12') ||
+              subject.includes('ap ') || subject.includes('advanced placement') ||
+              subject.includes('ib ') || subject.includes('international baccalaureate') ||
+              subject.includes('sat') || subject.includes('act') ||
+              subject.includes('algebra') || subject.includes('geometry') || 
+              subject.includes('calculus') || subject.includes('physics') ||
+              subject.includes('chemistry') || subject.includes('biology')
+            );
+          case 'college':
+            return tutorSubjects.some(subject => 
+              subject.includes('college') || 
+              subject.includes('university') ||
+              subject.includes('admission') ||
+              subject.includes('application') ||
+              subject.includes('essay writing') ||
+              subject.includes('personal statement')
+            );
+          case 'medical':
+            return tutorSubjects.some(subject => 
+              subject.includes('mcat') || 
+              subject.includes('medical') ||
+              subject.includes('pre-med') ||
+              subject.includes('premed') ||
+              subject.includes('med school') ||
+              subject.includes('anatomy') ||
+              subject.includes('physiology') ||
+              subject.includes('biochemistry')
+            );
+          case 'job':
+            return tutorSubjects.some(subject => 
+              subject.includes('job') || 
+              subject.includes('career') ||
+              subject.includes('interview') ||
+              subject.includes('resume') ||
+              subject.includes('professional') ||
+              subject.includes('workplace')
+            );
+          default:
+            return true;
+        }
+      });
+      setFilteredTutors(filtered);
+    }
+  }, [tutors, selectedCategory]);
 
   const fetchTutors = async () => {
     try {
       setLoading(true);
       const response = await apiService.getTutors();
       setTutors(response.data);
+      setFilteredTutors(response.data);
       setError('');
     } catch (err) {
       setError('Failed to load tutors. Please try again.');
@@ -142,16 +228,65 @@ ${userName}`);
           <p className="text-lg text-gray-600 dark:text-gray-300">Find qualified tutors in your subject areas.</p>
         </div>
 
-        {!tutors || tutors.length === 0 ? (
+        {/* Education Category Filter */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Browse by Education Level</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+            {educationCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`p-3 rounded-lg border text-center transition-all duration-200 ${
+                  selectedCategory === category.id
+                    ? 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
+                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                <div className="text-2xl mb-1">{category.icon}</div>
+                <div className="text-xs font-medium">{category.name}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results Counter */}
+        {!loading && filteredTutors && (
+          <div className="mb-6">
+            <p className="text-gray-600 dark:text-gray-400">
+              Showing {filteredTutors.length} of {tutors.length} tutors
+              {selectedCategory !== 'all' && (
+                <span> for {educationCategories.find(cat => cat.id === selectedCategory)?.name}</span>
+              )}
+            </p>
+          </div>
+        )}
+
+        {!filteredTutors || filteredTutors.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">No tutors available at the moment.</p>
-            <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-              Refresh
-            </Button>
+            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">
+              {selectedCategory === 'all' 
+                ? 'No tutors available at the moment.' 
+                : `No tutors found for ${educationCategories.find(cat => cat.id === selectedCategory)?.name}.`
+              }
+            </p>
+            <div className="space-y-3">
+              {selectedCategory !== 'all' && (
+                <Button 
+                  onClick={() => setSelectedCategory('all')} 
+                  variant="outline" 
+                  className="border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900"
+                >
+                  View All Tutors
+                </Button>
+              )}
+              <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                Refresh
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tutors.map((tutor) => (
+            {filteredTutors.map((tutor) => (
               <div key={tutor.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleTutorClick(tutor)}>
                 <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">
