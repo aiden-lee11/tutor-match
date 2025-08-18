@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { GraduationCap, BookOpen } from 'lucide-react';
 
@@ -8,6 +9,20 @@ interface UserTypeSelectionProps {
 }
 
 const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, userEmail }) => {
+  const navigate = useNavigate();
+
+  const handleSelectType = (type: 'tutor' | 'student') => {
+    // Call the parent callback to set the user type
+    onSelectType(type);
+    
+    // Navigate to the appropriate form creation page
+    if (type === 'student') {
+      navigate('/create-client');
+    } else if (type === 'tutor') {
+      navigate('/create-tutor');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full">
@@ -30,7 +45,7 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
             {/* Student Card */}
             <div 
               className="bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group flex flex-col h-full"
-              onClick={() => onSelectType('student')}
+              onClick={() => handleSelectType('student')}
             >
               <div className="p-6 sm:p-8 text-center flex flex-col h-full">
                 <div className="flex-1">
@@ -48,7 +63,7 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
                   <Button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectType('student');
+                      handleSelectType('student');
                     }}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium"
                   >
@@ -61,7 +76,7 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
             {/* Tutor Card */}
             <div 
               className="bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl hover:border-green-300 transition-all duration-300 cursor-pointer group flex flex-col h-full"
-              onClick={() => onSelectType('tutor')}
+              onClick={() => handleSelectType('tutor')}
             >
               <div className="p-6 sm:p-8 text-center flex flex-col h-full">
                 <div className="flex-1">
@@ -79,7 +94,7 @@ const UserTypeSelection: React.FC<UserTypeSelectionProps> = ({ onSelectType, use
                   <Button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectType('tutor');
+                      handleSelectType('tutor');
                     }}
                     className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium"
                   >

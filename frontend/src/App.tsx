@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom'
 import { BookOpen, GraduationCap, Menu, X, Home, Users, UserCheck, Shield } from 'lucide-react'
 import './App.css'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -297,6 +297,18 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 Create Profile
               </p>
               <Link 
+                to="/create-user"
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                  location.pathname === '/create-user' 
+                    ? 'bg-purple-100 text-purple-700' 
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <UserCheck className="w-5 h-5 mr-3" />
+                Get Started
+              </Link>
+              <Link 
                 to="/create-client"
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
@@ -369,28 +381,30 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // App Routes Component
 const AppRoutes: React.FC = () => {
   const { currentUser, userType, setUserType } = useAuth();
+  const navigate = useNavigate();
 
-  // Show type selection if user is logged in but hasn't selected a type yet
-  if (currentUser && !userType) {
-    return (
-      <Layout>
-        <UserTypeSelection 
-          onSelectType={(type) => {
-            setUserType(type);
-          }}
-          userEmail={currentUser.email || 'there'}
-        />
-      </Layout>
-    );
-  }
-
-  // Note: Removed forced profile creation - users can now browse without completing profiles
+  // Redirect new users to create-user page if they don't have a user type
+  React.useEffect(() => {
+    if (currentUser && !userType) {
+      navigate('/create-user');
+    }
+  }, [currentUser, userType, navigate]);
 
   return (
     <Routes>
       <Route path="/" element={
         <Layout>
           <HomePage />
+        </Layout>
+      } />
+      <Route path="/create-user" element={
+        <Layout>
+          <UserTypeSelection 
+            onSelectType={(type) => {
+              setUserType(type);
+            }}
+            userEmail={currentUser?.email || 'there'}
+          />
         </Layout>
       } />
       <Route path="/create-tutor" element={
