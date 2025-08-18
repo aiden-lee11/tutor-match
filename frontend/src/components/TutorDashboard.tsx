@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { apiService, type Client } from '../services/api';
 import { Button } from './ui/button';
 import ClientDetailModal from './ClientDetailModal';
+import SubjectSearch from './SubjectSearch';
 import { useAuth } from '../contexts/AuthContext';
+import Fuse from 'fuse.js';
 
 const TutorDashboard: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -12,7 +14,22 @@ const TutorDashboard: React.FC = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [subjectSearchTerm, setSubjectSearchTerm] = useState<string>('');
   const { currentUser, login } = useAuth();
+
+  // Initialize Fuse for fuzzy subject search
+  const clientsFuse = React.useRef<Fuse<Client> | null>(null);
+
+  // Update Fuse index when clients change
+  useEffect(() => {
+    if (clients.length > 0) {
+      clientsFuse.current = new Fuse(clients, {
+        threshold: 0.4,
+        distance: 100,
+        keys: ['subjects']
+      });
+    }
+  }, [clients]);
 
   // Education categories
   const educationCategories = [
@@ -29,12 +46,13 @@ const TutorDashboard: React.FC = () => {
     fetchClients();
   }, []);
 
-  // Filter clients based on selected category
+  // Filter clients based on selected category and subject search
   useEffect(() => {
-    if (selectedCategory === 'all') {
-      setFilteredClients(clients);
-    } else {
-      const filtered = clients.filter(client => {
+    let filtered = clients;
+
+    // Apply category filter first
+    if (selectedCategory !== 'all') {
+      filtered = clients.filter(client => {
         const clientSubjects = client.subjects.map(s => s.toLowerCase());
         const clientEducation = client.education?.toLowerCase() || '';
         
@@ -98,9 +116,21 @@ const TutorDashboard: React.FC = () => {
             return true;
         }
       });
-      setFilteredClients(filtered);
     }
-  }, [clients, selectedCategory]);
+
+    // Apply subject search filter
+    if (subjectSearchTerm.trim() && clientsFuse.current) {
+      const fuzzyResults = clientsFuse.current.search(subjectSearchTerm);
+      const fuzzyMatchedClients = fuzzyResults.map(result => result.item);
+      
+      // Get intersection of category-filtered and fuzzy-search results
+      filtered = filtered.filter(client => 
+        fuzzyMatchedClients.some(fuzzyClient => fuzzyClient.id === client.id)
+      );
+    }
+
+    setFilteredClients(filtered);
+  }, [clients, selectedCategory, subjectSearchTerm]);
 
   const fetchClients = async () => {
     try {
@@ -237,6 +267,29 @@ ${userName}`);
           </div>
         </div>
 
+        {/* Subject Search */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Search by Subject</h2>
+          <div className="max-w-md">
+            <SubjectSearch
+              onSearch={setSubjectSearchTerm}
+              placeholder="Search for specific subjects (e.g., Math, Physics, SAT Prep)..."
+              className="w-full"
+            />
+          </div>
+          {subjectSearchTerm && (
+            <div className="mt-2 text-sm text-gray-600">
+              <span className="font-medium">Searching for:</span> "{subjectSearchTerm}"
+              <button
+                onClick={() => setSubjectSearchTerm('')}
+                className="ml-2 text-blue-600 hover:text-blue-800 underline"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Results Counter */}
         {!loading && filteredClients && (
           <div className="mb-6">
@@ -244,6 +297,9 @@ ${userName}`);
               Showing {filteredClients.length} of {clients.length} students
               {selectedCategory !== 'all' && (
                 <span> for {educationCategories.find(cat => cat.id === selectedCategory)?.name}</span>
+              )}
+              {subjectSearchTerm && (
+                <span> matching "{subjectSearchTerm}"</span>
               )}
             </p>
           </div>

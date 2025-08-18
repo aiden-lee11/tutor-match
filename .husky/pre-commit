@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running pre-commit hooks..."
+
+# Build frontend
+echo "Building frontend..."
+(cd frontend && npm run build) || exit 1
+
+# Build backend  
+echo "Building backend..."
+(cd backend && go build) || exit 1
+
+echo "All builds completed successfully!"

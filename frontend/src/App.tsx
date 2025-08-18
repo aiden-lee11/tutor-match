@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom'
 import { BookOpen, GraduationCap, Menu, X, Home, Users, UserCheck, Shield } from 'lucide-react'
 import './App.css'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -191,7 +191,7 @@ const HomePage: React.FC = () => {
 
 // Layout Component with Header and Footer
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { currentUser, userType, hasCompletedProfile, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -368,8 +368,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 // App Routes Component
 const AppRoutes: React.FC = () => {
-  const { currentUser, userType, hasCompletedProfile, setUserType } = useAuth();
-  const navigate = useNavigate();
+  const { currentUser, userType, setUserType } = useAuth();
 
   // Show type selection if user is logged in but hasn't selected a type yet
   if (currentUser && !userType) {

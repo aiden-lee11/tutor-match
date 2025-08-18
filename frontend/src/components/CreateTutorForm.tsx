@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService, type Tutor } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import SearchableSubjectDropdown from './SearchableSubjectDropdown';
 
 interface CreateTutorFormProps {
   onProfileCompleted?: () => void;
@@ -13,7 +14,7 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subjects: '',
+    subjects: [] as string[],
     pay: '',
     bio: '',
     rating: 5.0,
@@ -55,7 +56,7 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
       const tutorData: Omit<Tutor, 'id'> = {
         name: formData.name,
         email: formData.email,
-        subjects: formData.subjects.split(',').map(s => s.trim()).filter(s => s),
+        subjects: formData.subjects,
         pay: parseFloat(formData.pay),
         bio: formData.bio,
         language: formData.language,
@@ -79,7 +80,7 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
       setFormData({
         name: '',
         email: '',
-        subjects: '',
+        subjects: [],
         pay: '',
         bio: '',
         language: '',
@@ -157,22 +158,13 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
                 )}
               </div>
 
-          <div className="space-y-2">
-            <label htmlFor="subjects" className="block text-sm font-medium text-gray-700">
-              Subjects You Can Teach
-            </label>
-            <input
-              type="text"
-              id="subjects"
-              name="subjects"
-              value={formData.subjects}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              placeholder="e.g. Mathematics, Physics, Chemistry"
-              required
-            />
-            <p className="text-xs text-gray-500">Separate multiple subjects with commas</p>
-          </div>
+          <SearchableSubjectDropdown
+            selectedSubjects={formData.subjects}
+            onSubjectsChange={(subjects) => setFormData(prev => ({ ...prev, subjects }))}
+            label="Subjects You Can Teach"
+            placeholder="Search and select subjects you can teach..."
+            required={true}
+          />
 
           <div className="space-y-2">
             <label htmlFor="pay" className="block text-sm font-medium text-gray-700">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService, type Client } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import SearchableSubjectDropdown from './SearchableSubjectDropdown';
 
 interface CreateClientFormProps {
   onProfileCompleted?: () => void;
@@ -13,7 +14,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subjects: '',
+    subjects: [] as string[],
     budget: '',
     description: '',
     language: '',
@@ -52,7 +53,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
       const clientData: Omit<Client, 'id'> = {
         name: formData.name,
         email: formData.email,
-        subjects: formData.subjects.split(',').map(s => s.trim()).filter(s => s),
+        subjects: formData.subjects,
         budget: parseFloat(formData.budget),
         description: formData.description,
         language: formData.language,
@@ -73,7 +74,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
       setFormData({
         name: '',
         email: '',
-        subjects: '',
+        subjects: [],
         budget: '',
         description: '',
         language: '',
@@ -145,22 +146,13 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
             )}
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="subjects" className="block text-sm font-medium text-gray-700">
-              Subjects You Need Help With
-            </label>
-            <input
-              type="text"
-              id="subjects"
-              name="subjects"
-              value={formData.subjects}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white text-gray-900"
-              placeholder="e.g. Mathematics, Physics, Chemistry"
-              required
-            />
-            <p className="text-xs text-gray-500">Separate multiple subjects with commas</p>
-          </div>
+          <SearchableSubjectDropdown
+            selectedSubjects={formData.subjects}
+            onSubjectsChange={(subjects) => setFormData(prev => ({ ...prev, subjects }))}
+            label="Subjects You Need Help With"
+            placeholder="Search and select subjects you need help with..."
+            required={true}
+          />
 
           <div className="space-y-2">
             <label htmlFor="budget" className="block text-sm font-medium text-gray-700">

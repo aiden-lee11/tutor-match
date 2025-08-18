@@ -17,7 +17,7 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const theme: Theme = 'light'; // Always light mode
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = (_newTheme: Theme) => {
     // Always enforce light mode, ignore any attempts to change
     localStorage.setItem('theme', 'light');
     document.documentElement.classList.remove('dark');
