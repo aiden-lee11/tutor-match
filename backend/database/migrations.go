@@ -25,7 +25,7 @@ func RunMigrations() error {
 		bio TEXT NOT NULL,
 		language VARCHAR(255),
 		location VARCHAR(255),
-		availability VARCHAR(255),
+		availability TEXT,
 		experience VARCHAR(255),
 		education VARCHAR(255),
 		certification VARCHAR(255),
@@ -49,7 +49,7 @@ func RunMigrations() error {
 		description TEXT,
 		language VARCHAR(255),
 		location VARCHAR(255),
-		availability VARCHAR(255),
+		availability TEXT,
 		education VARCHAR(255),
 		created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -60,6 +60,23 @@ func RunMigrations() error {
 	}
 	log.Println("Clients table verified")
 
+	// Update availability columns to TEXT type to support longer JSON strings
+	alterTutorsAvailability := `ALTER TABLE tutors ALTER COLUMN availability TYPE TEXT`
+	if _, err := db.Exec(context.Background(), alterTutorsAvailability); err != nil {
+		// Ignore error if column is already TEXT type
+		log.Printf("Note: Could not alter tutors availability column (may already be correct type): %v", err)
+	} else {
+		log.Println("Updated tutors availability column to TEXT")
+	}
+
+	alterClientsAvailability := `ALTER TABLE clients ALTER COLUMN availability TYPE TEXT`
+	if _, err := db.Exec(context.Background(), alterClientsAvailability); err != nil {
+		// Ignore error if column is already TEXT type
+		log.Printf("Note: Could not alter clients availability column (may already be correct type): %v", err)
+	} else {
+		log.Println("Updated clients availability column to TEXT")
+	}
+
 	log.Println("Database migrations completed successfully")
 	return nil
-} 
+}

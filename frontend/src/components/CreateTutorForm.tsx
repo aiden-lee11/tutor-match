@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { apiService, type Tutor } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import SearchableSubjectDropdown from './SearchableSubjectDropdown';
+import LanguageDropdown from './LanguageDropdown';
+import EducationLevelDropdown from './EducationLevelDropdown';
+import WeeklyAvailabilityGrid from './WeeklyAvailabilityGrid';
 
 interface CreateTutorFormProps {
   onProfileCompleted?: () => void;
@@ -57,7 +60,7 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
         name: formData.name,
         email: formData.email,
         subjects: formData.subjects,
-        pay: parseFloat(formData.pay),
+        pay: Math.round(parseFloat(formData.pay) * 100) / 100,
         bio: formData.bio,
         language: formData.language,
         rating: 5.0,
@@ -180,25 +183,24 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
               placeholder="35.00"
               min="0"
               step="0.01"
+              onBlur={(e) => {
+                // Format to 2 decimal places on blur
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value)) {
+                  e.target.value = value.toFixed(2);
+                  handleChange(e);
+                }
+              }}
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="language" className="block text-sm font-medium text-gray-700">
-              Language
-            </label>
-            <input
-              type="text"
-              id="language"
-              name="language"
-              value={formData.language}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              placeholder="e.g. English, Spanish, French"
-              required
-            />
-          </div>
+          <LanguageDropdown
+            value={formData.language}
+            onChange={(language) => setFormData(prev => ({ ...prev, language }))}
+            label="Teaching Language"
+            required={true}
+          />
 
           <div className="space-y-2">
             <label htmlFor="location" className="block text-sm font-medium text-gray-700">
@@ -216,21 +218,12 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
-              Availability
-            </label>
-            <input
-              type="text"
-              id="availability"
-              name="availability"
-              value={formData.availability}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              placeholder="e.g. Weekdays 6-9 PM, Weekends all day"
-              required
-            />
-          </div>
+          <WeeklyAvailabilityGrid
+            value={formData.availability}
+            onChange={(availability) => setFormData(prev => ({ ...prev, availability }))}
+            label="When are you available to teach?"
+            required={true}
+          />
 
           <div className="space-y-2">
             <label htmlFor="experience" className="block text-sm font-medium text-gray-700">
@@ -248,21 +241,13 @@ const CreateTutorForm: React.FC<CreateTutorFormProps> = ({ onProfileCompleted })
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="education" className="block text-sm font-medium text-gray-700">
-              Education
-            </label>
-            <input
-              type="text"
-              id="education"
-              name="education"
-              value={formData.education}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-              placeholder="e.g. Bachelor's in Mathematics, PhD in Physics"
-              required
-            />
-          </div>
+          <EducationLevelDropdown
+            value={formData.education}
+            onChange={(education) => setFormData(prev => ({ ...prev, education }))}
+            label="Your Education Level"
+            required={true}
+            forTutor={true}
+          />
 
           <div className="space-y-2">
             <label htmlFor="certification" className="block text-sm font-medium text-gray-700">
