@@ -110,7 +110,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
             </h1>
             <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name
             </label>
             <input
@@ -119,14 +119,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="Enter your full name"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Email Address
             </label>
             <input
@@ -135,18 +135,18 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="Enter your email address"
               readOnly={!!currentUser?.email}
               required
             />
             {currentUser?.email && (
-              <p className="text-xs text-gray-500">Email is automatically filled from your account</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Email is automatically filled from your account</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="subjects" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="subjects" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Subjects You Need Help With
             </label>
             <input
@@ -155,15 +155,15 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="subjects"
               value={formData.subjects}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="e.g. Mathematics, Physics, Chemistry"
               required
             />
-            <p className="text-xs text-gray-500">Separate multiple subjects with commas</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Separate multiple subjects with commas</p>
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="budget" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="budget" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Budget per Hour ($)
             </label>
             <input
@@ -172,7 +172,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="budget"
               value={formData.budget}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="25.00"
               min="0"
               step="0.01"
@@ -181,7 +181,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="language" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Language
             </label>
             <input
@@ -190,14 +190,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="language"
               value={formData.language}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="e.g. English, Spanish, French"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Location
             </label>
             <input
@@ -206,14 +206,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="e.g. New York City, Online"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="availability" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="availability" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Availability
             </label>
             <input
@@ -222,14 +222,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="availability"
               value={formData.availability}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="e.g. Weekdays 6-9 PM, Weekends all day"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="education" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="education" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Education Level
             </label>
             <input
@@ -238,14 +238,14 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               name="education"
               value={formData.education}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="e.g. High School, Bachelor's, Master's"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Additional Information (Optional)
             </label>
             <textarea
@@ -254,7 +254,7 @@ const CreateClientForm: React.FC<CreateClientFormProps> = ({ onProfileCompleted 
               value={formData.description}
               onChange={handleChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               placeholder="Tell us about your learning goals, preferred learning style, or any specific requirements..."
             />
           </div>
