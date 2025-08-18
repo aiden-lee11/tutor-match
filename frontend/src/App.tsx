@@ -12,7 +12,7 @@ import ClientDashboard from './components/ClientDashboard'
 import TutorDashboard from './components/TutorDashboard'
 import AdminDashboard from './components/AdminDashboard'
 import UserTypeSelection from './components/UserTypeSelection'
-import ThemeToggle from './components/ThemeToggle'
+
 import { apiService } from './services/api'
 
 // Home Page Component
@@ -33,21 +33,21 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-4xl mx-auto text-center">
           {/* Hero Section */}
           <section className="mb-12">
-                          <h1 className="text-responsive-3xl font-bold text-gray-900 dark:text-white mb-6">
+                          <h1 className="text-responsive-3xl font-bold text-gray-900 mb-6">
                 Welcome to Tutor Match
               </h1>
-            <p className="text-responsive-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-responsive-lg text-gray-600 mb-8 max-w-2xl mx-auto">
               Connect students with exceptional tutors for personalized learning experiences.
             </p>
             
             {/* Backend Status */}
             {/* <div className="mb-8">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                 {backendStatus}
               </span>
             </div> */}
@@ -56,11 +56,11 @@ const HomePage: React.FC = () => {
           {/* User Dashboard Section */}
           {currentUser && userType && hasCompletedProfile ? (
             <section className="mb-12">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8">
-                <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
+                <h2 className="text-responsive-xl font-semibold text-gray-900 mb-4">
                   Welcome back, {currentUser.displayName || currentUser.email}!
                 </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-gray-600 mb-6">
                   You're signed in as a {userType === 'student' ? 'student' : 'tutor'}.
                 </p>
                 <div className="flex justify-center">
@@ -81,12 +81,12 @@ const HomePage: React.FC = () => {
             /* Feature Cards Section */
             <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
               {/* Student Card */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 border border-blue-200 dark:border-blue-700 flex flex-col">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 border border-blue-200 flex flex-col">
                 <div className="flex-1">
-                  <h2 className="text-responsive-xl font-semibold text-blue-600 dark:text-blue-400 mb-4">
+                  <h2 className="text-responsive-xl font-semibold text-blue-600 mb-4">
                     For Students
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  <p className="text-gray-600 mb-6">
                     Find qualified tutors in your subject area and connect with them easily.
                   </p>
                   <div className="space-y-3">
@@ -99,7 +99,7 @@ const HomePage: React.FC = () => {
                     {!currentUser && (
                       <Link 
                         to="/create-client"
-                        className="w-full bg-white dark:bg-gray-800 border-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-300 dark:hover:bg-blue-900/20 px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-block text-center"
+                        className="w-full bg-white border-2 border-blue-300 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-block text-center"
                       >
                         Create Student Profile
                       </Link>
@@ -107,19 +107,19 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-6 flex justify-center">
-                  <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
                     <BookOpen className="w-8 h-8" />
                   </div>
                 </div>
               </div>
               
               {/* Tutor Card */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 border border-green-200 dark:border-green-700 flex flex-col">
+              <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 border border-green-200 flex flex-col">
                 <div className="flex-1">
-                  <h2 className="text-responsive-xl font-semibold text-green-600 dark:text-green-400 mb-4">
+                  <h2 className="text-responsive-xl font-semibold text-green-600 mb-4">
                     For Tutors
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  <p className="text-gray-600 mb-6">
                     Share your expertise and connect with students who need your help.
                   </p>
                   <div className="space-y-3">
@@ -132,7 +132,7 @@ const HomePage: React.FC = () => {
                     {!currentUser && (
                       <Link 
                         to="/create-tutor"
-                        className="w-full bg-white dark:bg-gray-800 border-2 border-green-300 text-green-600 hover:bg-green-50 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/20 px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-block text-center"
+                        className="w-full bg-white border-2 border-green-300 text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-block text-center"
                       >
                         Create Tutor Profile
                       </Link>
@@ -140,7 +140,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
                 <div className="mt-6 flex justify-center">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
                     <GraduationCap className="w-8 h-8" />
                   </div>
                 </div>
@@ -149,35 +149,35 @@ const HomePage: React.FC = () => {
           )}
           
           {/* How It Works Section */}
-          <section className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8">
-            <h2 className="text-responsive-xl font-semibold text-gray-900 dark:text-white mb-8">
+          <section className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
+            <h2 className="text-responsive-xl font-semibold text-gray-900 mb-8">
               How it works
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-xl font-bold">1</span>
                 </div>
-                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900 dark:text-white">Create Profile</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900">Create Profile</h3>
+                <p className="text-sm text-gray-600">
                   Sign up as either a student or tutor and create your profile.
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-xl font-bold">2</span>
                 </div>
-                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900 dark:text-white">Browse & Connect</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900">Browse & Connect</h3>
+                <p className="text-sm text-gray-600">
                   Students browse tutors, tutors view potential students.
                 </p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-xl font-bold">3</span>
                 </div>
-                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900 dark:text-white">Start Learning</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <h3 className="font-semibold text-responsive-base mb-2 text-gray-900">Start Learning</h3>
+                <p className="text-sm text-gray-600">
                   Make contact and begin your personalized tutoring sessions.
                 </p>
               </div>
@@ -196,16 +196,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
+      <header className="bg-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               {/* Hamburger menu button */}
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 mr-3"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-3"
               >
                 <Menu className="w-6 h-6" />
               </button>
@@ -213,7 +213,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               {/* Logo */}
               <Link 
                 to="/" 
-                className="text-xl font-bold text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-xl font-bold text-gray-900 hover:text-gray-700"
               >
                 Tutor Match
               </Link>
@@ -221,7 +221,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
             {/* Header Actions */}
             <div className="flex items-center space-x-4">
-              <ThemeToggle />
               <LoginButton />
               <UserProfile />
             </div>
@@ -238,16 +237,16 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
+      <div className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-4">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Navigation</h2>
+            <h2 className="text-xl font-bold text-gray-900">Navigation</h2>
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
             >
               <X className="w-5 h-5" />
             </button>
@@ -260,8 +259,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               onClick={() => setIsSidebarOpen(false)}
               className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/' 
-                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-blue-100 text-blue-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               <Home className="w-5 h-5 mr-3" />
@@ -272,8 +271,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               onClick={() => setIsSidebarOpen(false)}
               className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/client-dashboard' 
-                  ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-blue-100 text-blue-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               <BookOpen className="w-5 h-5 mr-3" />
@@ -284,8 +283,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               onClick={() => setIsSidebarOpen(false)}
               className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                 location.pathname === '/tutor-dashboard' 
-                  ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-green-100 text-green-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               <Users className="w-5 h-5 mr-3" />
@@ -293,8 +292,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </Link>
             
             {/* Profile Creation Links */}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                 Create Profile
               </p>
               <Link 
@@ -302,8 +301,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                   location.pathname === '/create-client' 
-                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                      ? 'bg-blue-100 text-blue-700' 
+                  : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <UserCheck className="w-5 h-5 mr-3" />
@@ -314,8 +313,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                   location.pathname === '/create-tutor' 
-                    ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' 
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-green-100 text-green-700' 
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <GraduationCap className="w-5 h-5 mr-3" />
@@ -325,14 +324,14 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
             {/* Admin Link */}
             {isAdmin && (
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-4 border-t border-gray-200">
                 <Link 
                   to="/admin"
                   onClick={() => setIsSidebarOpen(false)}
                   className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${
                     location.pathname === '/admin' 
-                      ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' 
-                      : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                          ? 'bg-red-100 text-red-700' 
+                    : 'text-red-600 hover:bg-red-50'
                   }`}
                 >
                   <Shield className="w-5 h-5 mr-3" />
@@ -350,15 +349,15 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="font-bold text-lg text-gray-900 dark:text-white">
+          <p className="font-bold text-lg text-gray-900">
             Tutor Match
           </p>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
+          <p className="text-gray-600 mt-2">
             Connecting students with exceptional tutors since 2024
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm text-gray-500 mt-2">
             Copyright © 2025 - All rights reserved
           </p>
         </div>

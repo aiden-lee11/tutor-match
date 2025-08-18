@@ -198,10 +198,10 @@ ${userName}`);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading tutors...</p>
+          <p className="mt-4 text-lg text-gray-600">Loading tutors...</p>
         </div>
       </div>
     );
@@ -209,10 +209,10 @@ ${userName}`);
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
-          <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <p className="text-red-600 text-lg mb-4">{error}</p>
+          <Button onClick={fetchTutors} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
             Try Again
           </Button>
         </div>
@@ -221,16 +221,16 @@ ${userName}`);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Available Tutors</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Find qualified tutors in your subject areas.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Available Tutors</h1>
+          <p className="text-lg text-gray-600">Find qualified tutors in your subject areas.</p>
         </div>
 
         {/* Education Category Filter */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Browse by Education Level</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Browse by Education Level</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
             {educationCategories.map((category) => (
               <button
@@ -238,8 +238,8 @@ ${userName}`);
                 onClick={() => setSelectedCategory(category.id)}
                 className={`p-3 rounded-lg border text-center transition-all duration-200 ${
                   selectedCategory === category.id
-                    ? 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300'
-                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    ? 'bg-blue-100 border-blue-300 text-blue-700'
+                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 <div className="text-2xl mb-1">{category.icon}</div>
@@ -252,7 +252,7 @@ ${userName}`);
         {/* Results Counter */}
         {!loading && filteredTutors && (
           <div className="mb-6">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Showing {filteredTutors.length} of {tutors.length} tutors
               {selectedCategory !== 'all' && (
                 <span> for {educationCategories.find(cat => cat.id === selectedCategory)?.name}</span>
@@ -263,7 +263,7 @@ ${userName}`);
 
         {!filteredTutors || filteredTutors.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">
+            <p className="text-xl text-gray-500 mb-4">
               {selectedCategory === 'all' 
                 ? 'No tutors available at the moment.' 
                 : `No tutors found for ${educationCategories.find(cat => cat.id === selectedCategory)?.name}.`
@@ -274,12 +274,12 @@ ${userName}`);
                 <Button 
                   onClick={() => setSelectedCategory('all')} 
                   variant="outline" 
-                  className="border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900"
+                  className="border-blue-300 text-blue-700 hover:bg-blue-50"
                 >
                   View All Tutors
                 </Button>
               )}
-              <Button onClick={fetchTutors} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <Button onClick={fetchTutors} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                 Refresh
               </Button>
             </div>
@@ -287,15 +287,15 @@ ${userName}`);
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTutors.map((tutor) => (
-              <div key={tutor.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleTutorClick(tutor)}>
+              <div key={tutor.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 cursor-pointer flex flex-col h-full" onClick={() => handleTutorClick(tutor)}>
                 <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">
-                    <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-semibold">
+                    <div className="h-12 w-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold">
                       {getInitials(tutor.name)}
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{tutor.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <h3 className="text-xl font-semibold text-gray-900">{tutor.name}</h3>
+                      <p className="text-sm text-gray-500">
                         {tutor.email}
                       </p>
                     </div>
@@ -303,10 +303,10 @@ ${userName}`);
                   
                   <div className="flex-1 space-y-4">
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Subjects</h4>
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Subjects</h4>
                       <div className="flex flex-wrap gap-2">
                         {tutor.subjects.map((subject, index) => (
-                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             {subject}
                           </span>
                         ))}
@@ -314,24 +314,24 @@ ${userName}`);
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rate</h4>
-                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Rate</h4>
+                      <p className="text-2xl font-bold text-blue-600">
                         {formatCurrency(tutor.pay)}/hr
                       </p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Rating</h4>
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Rating</h4>
                       <div className="flex items-center">
                         <span className="text-yellow-500 mr-2">{renderStars(tutor.rating || 0)}</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">({tutor.rating || 0})</span>
+                        <span className="text-sm text-gray-600">({tutor.rating || 0})</span>
                       </div>
                     </div>
 
                     {tutor.bio && (
                       <div>
-                        <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Bio</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2">Bio</h4>
+                        <p className="text-sm text-gray-600 line-clamp-3">
                           {tutor.bio}
                         </p>
                       </div>
@@ -348,7 +348,7 @@ ${userName}`);
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50" 
                       size="sm"
                     >
                       View Profile
@@ -361,16 +361,16 @@ ${userName}`);
         )}
 
         <div className="mt-12 text-center">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-8 border border-blue-200 dark:border-blue-800">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Ready to find your perfect tutor?</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8 border border-blue-200">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to find your perfect tutor?</h2>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Browse through our qualified tutors and find the perfect match for your learning needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
                 Update My Profile
               </Button>
-              <Button variant="outline" size="lg" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                 View All Tutors
               </Button>
             </div>

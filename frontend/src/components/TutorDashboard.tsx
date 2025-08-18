@@ -186,10 +186,10 @@ ${userName}`);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading clients...</p>
+          <p className="mt-4 text-lg text-gray-600">Loading clients...</p>
         </div>
       </div>
     );
@@ -197,10 +197,10 @@ ${userName}`);
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px] bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center justify-center min-h-[400px] bg-gray-50">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
-          <Button onClick={fetchClients} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <p className="text-red-600 text-lg mb-4">{error}</p>
+          <Button onClick={fetchClients} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
             Try Again
           </Button>
         </div>
@@ -209,16 +209,16 @@ ${userName}`);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Potential Students</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Connect with students who are looking for tutoring in your subject areas.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Potential Students</h1>
+          <p className="text-lg text-gray-600">Connect with students who are looking for tutoring in your subject areas.</p>
         </div>
 
         {/* Education Category Filter */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Browse by Education Level</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Browse by Education Level</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
             {educationCategories.map((category) => (
               <button
@@ -226,8 +226,8 @@ ${userName}`);
                 onClick={() => setSelectedCategory(category.id)}
                 className={`p-3 rounded-lg border text-center transition-all duration-200 ${
                   selectedCategory === category.id
-                    ? 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-600 text-green-700 dark:text-green-300'
-                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    ? 'bg-green-100 border-green-300 text-green-700'
+                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 <div className="text-2xl mb-1">{category.icon}</div>
@@ -240,7 +240,7 @@ ${userName}`);
         {/* Results Counter */}
         {!loading && filteredClients && (
           <div className="mb-6">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Showing {filteredClients.length} of {clients.length} students
               {selectedCategory !== 'all' && (
                 <span> for {educationCategories.find(cat => cat.id === selectedCategory)?.name}</span>
@@ -251,7 +251,7 @@ ${userName}`);
 
         {!filteredClients || filteredClients.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-500 dark:text-gray-400 mb-4">
+            <p className="text-xl text-gray-500 mb-4">
               {selectedCategory === 'all' 
                 ? 'No students available at the moment.' 
                 : `No students found for ${educationCategories.find(cat => cat.id === selectedCategory)?.name}.`
@@ -262,12 +262,12 @@ ${userName}`);
                 <Button 
                   onClick={() => setSelectedCategory('all')} 
                   variant="outline" 
-                  className="border-green-300 dark:border-green-600 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900"
+                  className="border-green-300 text-green-700 hover:bg-green-50"
                 >
                   View All Students
                 </Button>
               )}
-              <Button onClick={fetchClients} variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <Button onClick={fetchClients} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                 Refresh
               </Button>
             </div>
@@ -275,15 +275,15 @@ ${userName}`);
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredClients.map((client) => (
-              <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 dark:border-gray-700 cursor-pointer flex flex-col h-full" onClick={() => handleClientClick(client)}>
+              <div key={client.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 border border-gray-200 cursor-pointer flex flex-col h-full" onClick={() => handleClientClick(client)}>
                 <div className="p-6 flex flex-col h-full">
                   <div className="flex items-center space-x-4 mb-4">
-                    <div className="h-12 w-12 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center font-semibold">
+                    <div className="h-12 w-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center font-semibold">
                       {getInitials(client.name)}
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{client.name}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <h3 className="text-xl font-semibold text-gray-900">{client.name}</h3>
+                      <p className="text-sm text-gray-500">
                         {client.email}
                       </p>
                     </div>
@@ -291,10 +291,10 @@ ${userName}`);
                   
                   <div className="flex-1 space-y-4">
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Looking for help with</h4>
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Looking for help with</h4>
                       <div className="flex flex-wrap gap-2">
                         {client.subjects.map((subject, index) => (
-                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+                          <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                             {subject}
                           </span>
                         ))}
@@ -302,16 +302,16 @@ ${userName}`);
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Budget</h4>
-                      <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Budget</h4>
+                      <p className="text-2xl font-bold text-blue-600">
                         {formatCurrency(client.budget)}/hr
                       </p>
                     </div>
 
                     {client.description && (
                       <div>
-                        <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">Description</h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2">Description</h4>
+                        <p className="text-sm text-gray-600 line-clamp-3">
                           {client.description}
                         </p>
                       </div>
@@ -328,7 +328,7 @@ ${userName}`);
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" 
+                      className="w-full border-gray-300 text-gray-700 hover:bg-gray-50" 
                       size="sm" 
                       onClick={(e) => { e.stopPropagation(); handleClientClick(client); }}
                     >
@@ -342,16 +342,16 @@ ${userName}`);
         )}
 
         <div className="mt-12 text-center">
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg p-8 border border-green-200 dark:border-green-800">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Ready to start tutoring?</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg p-8 border border-green-200">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to start tutoring?</h2>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               These students are actively looking for tutors. Reach out to them to start building meaningful learning relationships.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
                 Update My Profile
               </Button>
-              <Button variant="outline" size="lg" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+              <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                 View All Opportunities
               </Button>
             </div>
